@@ -7,6 +7,11 @@ import java.util.Scanner;
 public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
+    /** Stores commands entered during the current session. */
+    public static String[] stored_commands = new String[100];
+    /** Number of commands currently stored. */
+    public static int index = 0;
+
     /**
      * Starts the application
      *
@@ -57,6 +62,27 @@ public class Botavius {
         """;
         System.out.println(goodbye);
     }
+
+    /**
+     * Builds a numbered list of all tasks stored during the session.
+     *
+     * @return the stored tasks as a numbered string, or an empty string
+     *         when no tasks have been stored
+     */
+    public static String list_tasks() {
+        StringBuilder return_string = new StringBuilder();
+        for (int i = 0; i < index; ++i) {
+            return_string
+                    .append(Integer.toString(i + 1))
+                    .append(": ")
+                    .append(stored_commands[i])
+                    .append("\n");
+        }
+        return return_string
+                .toString()
+                .strip();
+    }
+
     /**
      * Processes a command entered by the user.
      *
@@ -65,6 +91,14 @@ public class Botavius {
      *         for the user provided command
      */
     public static String process(String command) {
-        return command;
+        String[] parameters = command.split("\\s+");
+        switch (parameters[0].toLowerCase()) {
+            case "list":
+                return list_tasks();
+            default:
+                stored_commands[index] = command;
+                index++;
+                return "added: " + command;
+        }
     }
 }
