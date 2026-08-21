@@ -80,7 +80,8 @@ public class Botavius {
                     .append(storedTasks[i].toString())
                     .append("\n");
         }
-        return return_string
+        return "Here are the tasks in your list:\n"
+                + return_string
                 .toString()
                 .strip();
     }
@@ -119,7 +120,7 @@ public class Botavius {
                 namedParameters.get("/by"));
         storedTasks[index] = newTask;
         index++;
-        return "added: "
+        return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
                 + index
@@ -133,7 +134,7 @@ public class Botavius {
                 namedParameters.get("/to"));
         storedTasks[index] = newTask;
         index++;
-        return "added: "
+        return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
                 + index
@@ -145,7 +146,7 @@ public class Botavius {
                 namedParameters.get("/task").substring(5));
         storedTasks[index] = newTask;
         index++;
-        return "added: "
+        return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
                 + index
@@ -175,8 +176,8 @@ public class Botavius {
             String value = command.substring(lastMatchEnd).trim();
             parametersByName.put(currentKey, value);
         }
-
-        parametersByName.forEach((key, value) -> System.out.println(key + " => " + value));
+        //only for debugging
+        //parametersByName.forEach((key, value) -> System.out.println(key + " => " + value));
         return parametersByName;
     }
 
@@ -204,10 +205,7 @@ public class Botavius {
             case "todo":
                 return todo(namedParameters);
             default:
-                Task newTask = new Task(command);
-                storedTasks[index] = newTask;
-                index++;
-                return "added: " + newTask.toString();
+                return "bad command issued.";
         }
     }
 }
