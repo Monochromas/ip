@@ -4,6 +4,8 @@ import java.util.Scanner;
  * Runs the Botavius command-line application.
  */
 public class Botavius {
+    /** Reads commands entered by the user. */
+    public static Scanner scanner = new Scanner(System.in);
 
     /**
      * Starts the application, displays its banner, and shows the greeting
@@ -19,6 +21,18 @@ public class Botavius {
                 + "|____/ \\___/ |_/_/   \\_\\ \\_/   |____\\___/|____/\n";
         System.out.println(banner);
         greet();
+
+        String command = scanner.nextLine();
+        System.out.println("____________________________________________________________");
+
+        while (!command.toLowerCase().equals("bye")) {
+            process(command);
+            System.out.println(command);
+            System.out.println("____________________________________________________________");
+            command = scanner.nextLine();
+            System.out.println("____________________________________________________________");
+        }
+
         goodbye();
     }
 
@@ -44,4 +58,17 @@ public class Botavius {
         """;
         System.out.println(goodbye);
     }
+
+    /**
+     * Processes a command entered by the user.
+     *
+     * @param command command text to process
+     * @return the command text unchanged
+     */
+    public static String process(String command) {
+        return command;
+    }
+
+
+
 }
