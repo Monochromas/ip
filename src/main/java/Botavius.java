@@ -8,9 +8,9 @@ public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
     /** Stores commands entered during the current session. */
-    public static String[] stored_commands = new String[100];
+    private static String[] stored_commands = new String[100];
     /** Number of commands currently stored. */
-    public static int index = 0;
+    private static int index = 0;
 
     /**
      * Starts the application
