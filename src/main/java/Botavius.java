@@ -6,8 +6,7 @@ import java.util.Scanner;
  */
 public class Botavius {
     /**
-     * Starts the application, displays its banner, and shows the greeting
-     * and goodbye messages.
+     * Starts the application
      *
      * @param args command-line arguments, which are not used
      */
@@ -18,5 +17,30 @@ public class Botavius {
                 + "| |_) | |_| || |/ ___ \\ \\ v /   | || |_| |___) |\n"
                 + "|____/ \\___/ |_/_/   \\_\\ \\_/   |____\\___/|____/\n";
         System.out.println(banner);
+        greet();
+        goodbye();
+    }
+
+    /**
+     * Prints the application's greeting message.
+     */
+    public static void greet() {
+        String greeting = """        
+        Hello! I'm Botavius: \n
+        What can I do for you?\n
+        ____________________________________________________________
+        """;
+        System.out.println(greeting);
+    }
+
+    /**
+     * Prints the application's goodbye message.
+     */
+    public static void goodbye() {
+        String goodbye = """
+        Bye. Hope to see you again soon!\n
+        ____________________________________________________________
+        """;
+        System.out.println(goodbye);
     }
 }
