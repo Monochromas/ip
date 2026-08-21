@@ -74,7 +74,7 @@ public class Botavius {
             return_string
                     .append(Integer.toString(i + 1))
                     .append(": ")
-                    .append(storedTasks[i].getTaskString())
+                    .append(storedTasks[i].toString())
                     .append("\n");
         }
         return return_string
@@ -87,7 +87,7 @@ public class Botavius {
         Task t = storedTasks[taskIndex];
         t.setDone(true);
         return "Nice! I've marked this task as done: "
-                + t.getTaskString();
+                + t.toString();
     }
 
     public static String unmarkTask(String[] parameters) {
@@ -95,7 +95,7 @@ public class Botavius {
         Task t = storedTasks[taskIndex];
         t.setDone(false);
         return "OK, I've marked this task as not done yet: "
-                + t.getTaskString();
+                + t.toString();
     }
 
     /**
@@ -115,7 +115,7 @@ public class Botavius {
             case "unmark":
                 return unmarkTask(parameters);
             default:
-                Task newTask = new Task(parameters[0]);
+                Task newTask = new Task(command);
                 storedTasks[index] = newTask;
                 index++;
                 return "added: " + command;

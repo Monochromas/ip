@@ -11,7 +11,7 @@ public class Task {
         isDone = done;
     }
 
-    public String getTaskString() {
+    public String toString() {
         String return_string = "";
         if (isDone) {
             return_string = "[X] ";
