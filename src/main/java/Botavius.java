@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class Botavius {
+    public static String[] stored_commands = new String[100];
+    public static int index = 0;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String banner = " ____   ___ _____  _  __     _____ _   _ ____  \n"
@@ -14,7 +16,7 @@ public class Botavius {
         System.out.println("____________________________________________________________");
 
         while (!command.toLowerCase().equals("bye")) {
-            process(command);
+            command = process(command);
             System.out.println(command);
             System.out.println("____________________________________________________________");
             command = scanner.nextLine();
@@ -26,7 +28,19 @@ public class Botavius {
     }
 
     public static String process(String command) {
-        return command;
+        String return_string = "";
+        if (command.toLowerCase().equals("list")) {
+            for (int i = 0; i < index; ++i) {
+                return_string = return_string +
+                        Integer.toString(i+1) + ". " +
+                        stored_commands[i] + "\n";
+            }
+            return return_string;
+        }
+
+        stored_commands[index] = command;
+        index++;
+        return  "added: " + command;
     }
 
 
