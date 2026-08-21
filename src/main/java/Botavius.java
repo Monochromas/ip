@@ -1,4 +1,3 @@
-import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -7,9 +6,9 @@ import java.util.Scanner;
 public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
-    /** Stores commands entered during the current session. */
-    private static String[] stored_commands = new String[100];
-    /** Number of commands currently stored. */
+    /** Stores tasks entered during the current session. */
+    private static Task[] storedTasks = new Task[100];
+    /** Number of tasks currently stored. */
     private static int index = 0;
 
     /**
@@ -69,18 +68,34 @@ public class Botavius {
      * @return the stored tasks as a numbered string, or an empty string
      *         when no tasks have been stored
      */
-    public static String list_tasks() {
+    public static String listTasks() {
         StringBuilder return_string = new StringBuilder();
         for (int i = 0; i < index; ++i) {
             return_string
                     .append(Integer.toString(i + 1))
                     .append(": ")
-                    .append(stored_commands[i])
+                    .append(storedTasks[i].getTaskString())
                     .append("\n");
         }
         return return_string
                 .toString()
                 .strip();
+    }
+
+    public static String markTask(String[] parameters) {
+        int taskIndex = Integer.parseInt(parameters[1]) - 1;
+        Task t = storedTasks[taskIndex];
+        t.setDone(true);
+        return "Nice! I've marked this task as done: "
+                + t.getTaskString();
+    }
+
+    public static String unmarkTask(String[] parameters) {
+        int taskIndex = Integer.parseInt(parameters[1]) - 1;
+        Task t = storedTasks[taskIndex];
+        t.setDone(false);
+        return "OK, I've marked this task as not done yet: "
+                + t.getTaskString();
     }
 
     /**
@@ -94,9 +109,14 @@ public class Botavius {
         String[] parameters = command.split("\\s+");
         switch (parameters[0].toLowerCase()) {
             case "list":
-                return list_tasks();
+                return listTasks();
+            case "mark":
+                return markTask(parameters);
+            case "unmark":
+                return unmarkTask(parameters);
             default:
-                stored_commands[index] = command;
+                Task newTask = new Task(parameters[0]);
+                storedTasks[index] = newTask;
                 index++;
                 return "added: " + command;
         }
