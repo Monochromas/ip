@@ -1,3 +1,4 @@
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -6,6 +7,11 @@ import java.util.Scanner;
 public class Botavius {
     /** Reads commands entered by the user. */
     public static Scanner scanner = new Scanner(System.in);
+    /** Stores commands entered during the current session. */
+    public static String[] stored_commands = new String[100];
+    /** Number of commands currently stored. */
+    public static int index = 0;
+
 
     /**
      * Starts the application, displays its banner, and shows the greeting
@@ -25,8 +31,8 @@ public class Botavius {
         String command = scanner.nextLine();
         System.out.println("____________________________________________________________");
 
-        while (!command.toLowerCase().equals("bye")) {
-            process(command);
+        while (!command.equalsIgnoreCase("bye")) {
+            command = process(command);
             System.out.println(command);
             System.out.println("____________________________________________________________");
             command = scanner.nextLine();
@@ -58,17 +64,37 @@ public class Botavius {
         """;
         System.out.println(goodbye);
     }
-
+    /**
+     * Builds a numbered list of all commands stored during the session.
+     *
+     * @return the stored commands as a numbered string, or an empty string
+     *         when no commands have been stored
+     */
+    public static String list_behaviour() {
+        String return_string = "";
+        for (int i = 0; i < index; ++i) {
+            return_string = return_string +
+                    Integer.toString(i+1) +
+                    ": " +
+                    stored_commands[i] +
+                    "\n"
+            ;
+        }
+        return return_string.strip();
+    }
     /**
      * Processes a command entered by the user.
      *
      * @param command command text to process
-     * @return the command text unchanged
+     * @return a numbered command list for {@code list}, or a confirmation
+     *         message for another command
      */
     public static String process(String command) {
-        return command;
+        if (command.equalsIgnoreCase("list")) {
+            return list_behaviour();
+        }
+        stored_commands[index] = command;
+        index++;
+        return "added: " + command;
     }
-
-
-
 }
