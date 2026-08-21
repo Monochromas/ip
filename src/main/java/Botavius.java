@@ -114,6 +114,13 @@ public class Botavius {
                 + t.toString();
     }
 
+    /**
+     * Creates and stores a deadline task from parsed command parameters.
+     *
+     * @param namedParameters command parameters containing {@code /task} and
+     *                        {@code /by} values
+     * @return a confirmation message describing the new task
+     */
     public static String deadline(Map<String, String> namedParameters) {
         Deadline newTask = new Deadline(
                 namedParameters.get("/task").substring(9),
@@ -127,6 +134,13 @@ public class Botavius {
                 + " tasks in the list.";
     }
 
+    /**
+     * Creates and stores an event task from parsed command parameters.
+     *
+     * @param namedParameters command parameters containing {@code /task},
+     *                        {@code /from}, and {@code /to} values
+     * @return a confirmation message describing the new task
+     */
     public static String event(Map<String, String> namedParameters) {
         Event newTask = new Event(
                 namedParameters.get("/task").substring(6),
@@ -141,6 +155,13 @@ public class Botavius {
                 + " tasks in the list.";
     }
 
+    /**
+     * Creates and stores a to-do task from parsed command parameters.
+     *
+     * @param namedParameters command parameters containing a {@code /task}
+     *                        value
+     * @return a confirmation message describing the new task
+     */
     public static String todo(Map<String, String> namedParameters) {
         ToDo newTask = new ToDo(
                 namedParameters.get("/task").substring(5));
@@ -153,6 +174,12 @@ public class Botavius {
                 + " tasks in the list.";
     }
 
+    /**
+     * Extracts slash-prefixed named parameters from a command string.
+     *
+     * @param command command containing an optional task and named values
+     * @return map of parameter names to their trimmed values
+     */
     public static Map<String, String> getNamedParameters(String command) {
         Map<String, String> parametersByName = new HashMap<>();
         Pattern pattern = Pattern.compile("(/[a-zA-Z0-9]+)");
