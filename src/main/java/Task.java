@@ -1,16 +1,39 @@
+/**
+ * Represents a task entered by the user and its completion status.
+ */
 public class Task {
+    /** Text describing the task. */
     private String description;
+    /** Whether the task has been completed. */
     private boolean isDone;
 
+    /**
+     * Creates a new incomplete task.
+     *
+     * @param description text describing the task
+     */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
+    /**
+     * Updates the task's completion status.
+     *
+     * @param done {@code true} to mark the task complete; {@code false}
+     *             to mark it incomplete
+     */
     public void setDone(boolean done) {
         isDone = done;
     }
 
+    /**
+     * Returns the task with a completion marker and its description.
+     *
+     * @return {@code [X]} followed by the description if complete, otherwise
+     *         {@code [ ]} followed by the description
+     */
+    @Override
     public String toString() {
         String return_string = "";
         if (isDone) {

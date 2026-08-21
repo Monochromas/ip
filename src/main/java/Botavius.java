@@ -82,6 +82,12 @@ public class Botavius {
                 .strip();
     }
 
+    /**
+     * Marks the task identified by the command parameters as completed.
+     *
+     * @param parameters command words, with the task number at position 1
+     * @return a confirmation message containing the updated task
+     */
     public static String markTask(String[] parameters) {
         int taskIndex = Integer.parseInt(parameters[1]) - 1;
         Task t = storedTasks[taskIndex];
@@ -90,6 +96,12 @@ public class Botavius {
                 + t.toString();
     }
 
+    /**
+     * Marks the task identified by the command parameters as not completed.
+     *
+     * @param parameters command words, with the task number at position 1
+     * @return a confirmation message containing the updated task
+     */
     public static String unmarkTask(String[] parameters) {
         int taskIndex = Integer.parseInt(parameters[1]) - 1;
         Task t = storedTasks[taskIndex];
