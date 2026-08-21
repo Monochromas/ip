@@ -1,5 +1,8 @@
 import java.util.Scanner;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * Runs the Botavius command-line application.
  */
@@ -110,6 +113,73 @@ public class Botavius {
                 + t.toString();
     }
 
+    public static String deadline(Map<String, String> namedParameters) {
+        Deadline newTask = new Deadline(
+                namedParameters.get("/task").substring(9),
+                namedParameters.get("/by"));
+        storedTasks[index] = newTask;
+        index++;
+        return "added: "
+                + newTask.toString()
+                + "\nNow you have "
+                + index
+                + " tasks in the list.";
+    }
+
+    public static String event(Map<String, String> namedParameters) {
+        Event newTask = new Event(
+                namedParameters.get("/task").substring(6),
+                namedParameters.get("/from"),
+                namedParameters.get("/to"));
+        storedTasks[index] = newTask;
+        index++;
+        return "added: "
+                + newTask.toString()
+                + "\nNow you have "
+                + index
+                + " tasks in the list.";
+    }
+
+    public static String todo(Map<String, String> namedParameters) {
+        ToDo newTask = new ToDo(
+                namedParameters.get("/task").substring(5));
+        storedTasks[index] = newTask;
+        index++;
+        return "added: "
+                + newTask.toString()
+                + "\nNow you have "
+                + index
+                + " tasks in the list.";
+    }
+
+    public static Map<String, String> getNamedParameters(String command) {
+        Map<String, String> parametersByName = new HashMap<>();
+        Pattern pattern = Pattern.compile("(/[a-zA-Z0-9]+)");
+        Matcher matcher = pattern.matcher(command);
+
+        String currentKey = "/task";
+        int lastMatchEnd = 0;
+
+        while (matcher.find()) {
+            // If not null, have valid key to pair
+            if (currentKey != null) {
+                String value = command.substring(lastMatchEnd, matcher.start()).trim();
+                parametersByName.put(currentKey, value);
+            }
+
+            currentKey = matcher.group(0); // Set key to "\XXX"
+            lastMatchEnd = matcher.end();
+        }
+
+        if (currentKey != null) {
+            String value = command.substring(lastMatchEnd).trim();
+            parametersByName.put(currentKey, value);
+        }
+
+        parametersByName.forEach((key, value) -> System.out.println(key + " => " + value));
+        return parametersByName;
+    }
+
     /**
      * Processes a command entered by the user.
      *
@@ -119,6 +189,7 @@ public class Botavius {
      */
     public static String process(String command) {
         String[] parameters = command.split("\\s+");
+        Map<String, String> namedParameters = getNamedParameters(command);
         switch (parameters[0].toLowerCase()) {
             case "list":
                 return listTasks();
@@ -126,11 +197,17 @@ public class Botavius {
                 return markTask(parameters);
             case "unmark":
                 return unmarkTask(parameters);
+            case "deadline":
+                return deadline(namedParameters);
+            case "event":
+                return event(namedParameters);
+            case "todo":
+                return todo(namedParameters);
             default:
                 Task newTask = new Task(command);
                 storedTasks[index] = newTask;
                 index++;
-                return "added: " + command;
+                return "added: " + newTask.toString();
         }
     }
 }
