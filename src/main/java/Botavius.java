@@ -11,54 +11,5 @@ public class Botavius {
                 + "| |_) | |_| || |/ ___ \\ \\ v /   | || |_| |___) |\n"
                 + "|____/ \\___/ |_/_/   \\_\\ \\_/   |____\\___/|____/\n";
         System.out.println(banner);
-        greet();
-        String command = scanner.nextLine();
-        System.out.println("____________________________________________________________");
-
-        while (!command.toLowerCase().equals("bye")) {
-            command = process(command);
-            System.out.println(command);
-            System.out.println("____________________________________________________________");
-            command = scanner.nextLine();
-            System.out.println("____________________________________________________________");
-        }
-
-        goodbye();
-
-    }
-
-    public static String process(String command) {
-        String return_string = "";
-        if (command.toLowerCase().equals("list")) {
-            for (int i = 0; i < index; ++i) {
-                return_string = return_string +
-                        Integer.toString(i+1) + ". " +
-                        stored_commands[i] + "\n";
-            }
-            return return_string;
-        }
-
-        stored_commands[index] = command;
-        index++;
-        return  "added: " + command;
-    }
-
-
-
-    public static void greet() {
-        String greeting = """        
-        Hello! I'm Botavius: \n
-        What can I do for you?\n
-        ____________________________________________________________
-        """;
-        System.out.println(greeting);
-    }
-
-    public static void goodbye() {
-        String goodbye = """
-        Bye. Hope to see you again soon!\n
-        ____________________________________________________________
-        """;
-        System.out.println(goodbye);
     }
 }
