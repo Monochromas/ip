@@ -13,8 +13,11 @@ public class Task {
      * @param description text describing the task
      */
     public Task(String description) {
-        this.description = description;
+        this.description = description.strip();
         this.isDone = false;
+        if (description.length() <= 0) {
+            throw new BotaviusException("description not provided.");
+        }
     }
 
     /**

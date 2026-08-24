@@ -13,6 +13,9 @@ public class Deadline extends Task {
     public Deadline(String description, String by) {
         super(description);
         this.by = by;
+        if (by == null) {
+            throw new BotaviusException("deadline not provided.");
+        }
     }
 
     /**

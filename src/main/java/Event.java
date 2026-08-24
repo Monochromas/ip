@@ -17,6 +17,12 @@ public class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+        if (from == null) {
+            throw new BotaviusException("starting time not provided.");
+        }
+        if (to == null) {
+            throw new BotaviusException("ending time not provided.");
+        }
     }
 
     /**

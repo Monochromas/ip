@@ -25,18 +25,23 @@ public class Botavius {
                 + "|  _ \\| | | || | / _ \\ \\ \\ / /  | || | | \\___ \\\n"
                 + "| |_) | |_| || |/ ___ \\ \\ v /   | || |_| |___) |\n"
                 + "|____/ \\___/ |_/_/   \\_\\ \\_/   |____\\___/|____/\n";
+
+        String command = "";
         System.out.println(banner);
         greet();
-
-        String command = scanner.nextLine();
-        System.out.println("____________________________________________________________");
-
         while (!command.equalsIgnoreCase("bye")) {
-            command = process(command);
-            System.out.println(command);
-            System.out.println("____________________________________________________________");
-            command = scanner.nextLine();
-            System.out.println("____________________________________________________________");
+            try {
+                command = scanner.nextLine();
+                command = process(command);
+                System.out.println("____________________________________________________________");
+                System.out.println(command);
+                System.out.println("____________________________________________________________");
+            } catch (BotaviusException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                ;
+            }
+
         }
 
         goodbye();
@@ -123,8 +128,8 @@ public class Botavius {
      */
     public static String deadline(Map<String, String> namedParameters) {
         Deadline newTask = new Deadline(
-                namedParameters.get("/task").substring(9),
-                namedParameters.get("/by"));
+                namedParameters.get("/task").substring(8),
+                namedParameters.gett("/by"));
         storedTasks[index] = newTask;
         index++;
         return "Got it. I've added this task:\n"
@@ -143,7 +148,7 @@ public class Botavius {
      */
     public static String event(Map<String, String> namedParameters) {
         Event newTask = new Event(
-                namedParameters.get("/task").substring(6),
+                namedParameters.get("/task").substring(5),
                 namedParameters.get("/from"),
                 namedParameters.get("/to"));
         storedTasks[index] = newTask;
@@ -164,7 +169,7 @@ public class Botavius {
      */
     public static String todo(Map<String, String> namedParameters) {
         ToDo newTask = new ToDo(
-                namedParameters.get("/task").substring(5));
+                namedParameters.get("/task").substring(4));
         storedTasks[index] = newTask;
         index++;
         return "Got it. I've added this task:\n"
@@ -232,7 +237,7 @@ public class Botavius {
             case "todo":
                 return todo(namedParameters);
             default:
-                return "bad command issued.";
+                throw new BotaviusException("bad command issued.");
         }
     }
 }
