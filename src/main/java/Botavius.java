@@ -9,13 +9,13 @@ import java.util.regex.Pattern;
 public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
-    /** Stores tasks entered during the current session. */
+    /** Stores tasks entered during the current session, in insertion order. */
     private static Task[] storedTasks = new Task[100];
-    /** Number of tasks currently stored. */
+    /** Number of tasks currently stored in {@link #storedTasks}. */
     private static int index = 0;
 
     /**
-     * Starts the application
+     * Starts the application and reads commands until the user enters {@code bye}.
      *
      * @param args command-line arguments, which are not used
      */
@@ -96,9 +96,13 @@ public class Botavius {
      *
      * @param parameters command words, with the task number at position 1
      * @return a confirmation message containing the updated task
+     * @throws BotaviusException if the task number does not identify a task
      */
     public static String markTask(String[] parameters) {
         int taskIndex = Integer.parseInt(parameters[1]) - 1;
+        if (taskIndex >= index || taskIndex < 0) {
+            throw new BotaviusException("Task index doesn't exist");
+        }
         Task t = storedTasks[taskIndex];
         t.setDone(true);
         return "Nice! I've marked this task as done: "
@@ -110,9 +114,13 @@ public class Botavius {
      *
      * @param parameters command words, with the task number at position 1
      * @return a confirmation message containing the updated task
+     * @throws BotaviusException if the task number does not identify a task
      */
     public static String unmarkTask(String[] parameters) {
         int taskIndex = Integer.parseInt(parameters[1]) - 1;
+        if (taskIndex >= index || taskIndex < 0) {
+            throw new BotaviusException("Task index doesn't exist");
+        }
         Task t = storedTasks[taskIndex];
         t.setDone(false);
         return "OK, I've marked this task as not done yet: "
@@ -129,7 +137,7 @@ public class Botavius {
     public static String deadline(Map<String, String> namedParameters) {
         Deadline newTask = new Deadline(
                 namedParameters.get("/task").substring(8),
-                namedParameters.gett("/by"));
+                namedParameters.get("/by"));
         storedTasks[index] = newTask;
         index++;
         return "Got it. I've added this task:\n"
@@ -217,8 +225,8 @@ public class Botavius {
      * Processes a command entered by the user.
      *
      * @param command command text to process
-     * @return return the confirmation message
-     *         for the user provided command
+     * @return the confirmation message for the user-provided command
+     * @throws BotaviusException if the command is not recognized
      */
     public static String process(String command) {
         String[] parameters = command.split("\\s+");

@@ -1,4 +1,4 @@
-/** Represents a standard to-do task. */
+/** Represents a standard to-do task without a date or time. */
 public class ToDo extends Task {
 
     /**

@@ -12,6 +12,7 @@ public class Event extends Task {
      * @param description task description
      * @param from event start time
      * @param to event end time
+     * @throws BotaviusException if either time is missing
      */
     public Event(String description, String from, String to) {
         super(description);

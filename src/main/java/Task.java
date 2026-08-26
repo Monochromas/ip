@@ -11,6 +11,7 @@ public class Task {
      * Creates a new incomplete task.
      *
      * @param description text describing the task
+     * @throws BotaviusException if the description is empty
      */
     public Task(String description) {
         this.description = description.strip();

@@ -1,4 +1,4 @@
-/** Represents a task with a due date or deadline. */
+/** Represents a task with a due date or other deadline description. */
 public class Deadline extends Task {
 
     /** The deadline description. */
@@ -9,6 +9,7 @@ public class Deadline extends Task {
      *
      * @param description task description
      * @param by deadline text
+     * @throws BotaviusException if the deadline is missing
      */
     public Deadline(String description, String by) {
         super(description);
