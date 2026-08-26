@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,8 @@ public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
     /** Stores tasks entered during the current session, in insertion order. */
-    private static Task[] storedTasks = new Task[100];
+    //private static Task[] storedTasks = new Task[100];
+    private static ArrayList<Task> storedTasks = new ArrayList<Task>();
     /** Number of tasks currently stored in {@link #storedTasks}. */
     private static int index = 0;
 
@@ -82,7 +84,7 @@ public class Botavius {
             return_string
                     .append(Integer.toString(i + 1))
                     .append(": ")
-                    .append(storedTasks[i].toString())
+                    .append(storedTasks.get(i).toString())
                     .append("\n");
         }
         return "Here are the tasks in your list:\n"
@@ -103,7 +105,7 @@ public class Botavius {
         if (taskIndex >= index || taskIndex < 0) {
             throw new BotaviusException("Task index doesn't exist");
         }
-        Task t = storedTasks[taskIndex];
+        Task t = storedTasks.get(taskIndex);
         t.setDone(true);
         return "Nice! I've marked this task as done: "
                 + t.toString();
@@ -121,7 +123,7 @@ public class Botavius {
         if (taskIndex >= index || taskIndex < 0) {
             throw new BotaviusException("Task index doesn't exist");
         }
-        Task t = storedTasks[taskIndex];
+        Task t = storedTasks.get(taskIndex);
         t.setDone(false);
         return "OK, I've marked this task as not done yet: "
                 + t.toString();
@@ -138,7 +140,7 @@ public class Botavius {
         Deadline newTask = new Deadline(
                 namedParameters.get("/task").substring(8),
                 namedParameters.get("/by"));
-        storedTasks[index] = newTask;
+        storedTasks.add(newTask);
         index++;
         return "Got it. I've added this task:\n"
                 + newTask.toString()
@@ -159,7 +161,7 @@ public class Botavius {
                 namedParameters.get("/task").substring(5),
                 namedParameters.get("/from"),
                 namedParameters.get("/to"));
-        storedTasks[index] = newTask;
+        storedTasks.add(newTask);
         index++;
         return "Got it. I've added this task:\n"
                 + newTask.toString()
@@ -178,7 +180,7 @@ public class Botavius {
     public static String todo(Map<String, String> namedParameters) {
         ToDo newTask = new ToDo(
                 namedParameters.get("/task").substring(4));
-        storedTasks[index] = newTask;
+        storedTasks.add(newTask);
         index++;
         return "Got it. I've added this task:\n"
                 + newTask.toString()
