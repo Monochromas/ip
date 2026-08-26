@@ -11,7 +11,6 @@ public class Botavius {
     /** Reads commands entered by the user. */
     private static final Scanner scanner = new Scanner(System.in);
     /** Stores tasks entered during the current session, in insertion order. */
-    //private static Task[] storedTasks = new Task[100];
     private static ArrayList<Task> storedTasks = new ArrayList<Task>();
     /** Number of tasks currently stored in {@link #storedTasks}. */
     private static int index = 0;
@@ -135,6 +134,7 @@ public class Botavius {
      * @param namedParameters command parameters containing {@code /task} and
      *                        {@code /by} values
      * @return a confirmation message describing the new task
+     * @throws BotaviusException if required task information is missing
      */
     public static String deadline(Map<String, String> namedParameters) {
         Deadline newTask = new Deadline(
@@ -155,6 +155,7 @@ public class Botavius {
      * @param namedParameters command parameters containing {@code /task},
      *                        {@code /from}, and {@code /to} values
      * @return a confirmation message describing the new task
+     * @throws BotaviusException if required task information is missing
      */
     public static String event(Map<String, String> namedParameters) {
         Event newTask = new Event(
@@ -176,6 +177,7 @@ public class Botavius {
      * @param namedParameters command parameters containing a {@code /task}
      *                        value
      * @return a confirmation message describing the new task
+     * @throws BotaviusException if the task description is missing
      */
     public static String todo(Map<String, String> namedParameters) {
         ToDo newTask = new ToDo(
@@ -222,7 +224,28 @@ public class Botavius {
         //parametersByName.forEach((key, value) -> System.out.println(key + " => " + value));
         return parametersByName;
     }
-
+    /**
+     * Deletes the task identified by the command parameters.
+     *
+     * @param parameters command words, with the task number at position 1
+     * @return a confirmation message containing the deleted task
+     * @throws BotaviusException if the task number does not identify a task
+     */
+    public static String delete(String[] parameters) {
+        int taskIndex = Integer.parseInt(parameters[1]) - 1;
+        if (taskIndex >= index || taskIndex < 0) {
+            throw new BotaviusException("Task index doesn't exist");
+        }
+        index -= 1;
+        String returnstring =
+                "Noted. I've removed this task: "
+                        + storedTasks.get(taskIndex).toString()
+                        + "\nNow you have "
+                        + index
+                        + " tasks in the list.";
+        storedTasks.remove(taskIndex);
+        return returnstring;
+    }
     /**
      * Processes a command entered by the user.
      *
@@ -246,6 +269,8 @@ public class Botavius {
                 return event(namedParameters);
             case "todo":
                 return todo(namedParameters);
+            case "delete":
+                return delete(parameters);
             default:
                 throw new BotaviusException("bad command issued.");
         }
