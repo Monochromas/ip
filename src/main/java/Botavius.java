@@ -254,6 +254,13 @@ public class Botavius {
         return returnstring;
     }
 
+    /**
+     * Saves all currently stored tasks to {@code save.txt}.
+     *
+     * <p>Each task is written on its own line using the task's string
+     * representation. If the file cannot be written, the exception is
+     * printed and the application continues running.</p>
+     */
     public static void save() {
         StringBuilder return_string = new StringBuilder();
         for (int i = 0; i < index; ++i) {
@@ -273,6 +280,13 @@ public class Botavius {
         }
     }
 
+    /**
+     * Loads previously saved tasks from {@code save.txt} into the task list.
+     *
+     * <p>The task type and completion status are reconstructed from each
+     * saved line. If the file does not exist or cannot be read, loading is
+     * skipped and the application continues with an empty task list.</p>
+     */
     public static void load() {
         try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
             String line;
