@@ -43,7 +43,7 @@ public class Botavius {
             } catch (BotaviusException e) {
                 System.out.println(e.getMessage());
             } finally {
-                save();
+                ;
             }
 
         }
@@ -145,6 +145,7 @@ public class Botavius {
                 namedParameters.get("/by"));
         storedTasks.add(newTask);
         index++;
+        save();
         return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
@@ -167,6 +168,7 @@ public class Botavius {
                 namedParameters.get("/to"));
         storedTasks.add(newTask);
         index++;
+        save();
         return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
@@ -187,6 +189,7 @@ public class Botavius {
                 namedParameters.get("/task").substring(4));
         storedTasks.add(newTask);
         index++;
+        save();
         return "Got it. I've added this task:\n"
                 + newTask.toString()
                 + "\nNow you have "
