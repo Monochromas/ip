@@ -2,9 +2,9 @@
 public class Event extends Task {
 
     /** Event start time. */
-    protected String from;
+    private String from;
     /** Event end time. */
-    protected String to;
+    private String to;
 
     /**
      * Creates an incomplete event task.

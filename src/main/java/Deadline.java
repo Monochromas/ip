@@ -2,7 +2,7 @@
 public class Deadline extends Task {
 
     /** The deadline description. */
-    protected String by;
+    private String by;
 
     /**
      * Creates an incomplete deadline task.
