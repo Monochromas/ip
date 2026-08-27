@@ -1,9 +1,11 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * Runs the Botavius command-line application.
  */
@@ -29,6 +31,7 @@ public class Botavius {
 
         String command = "";
         System.out.println(banner);
+        load();
         greet();
         while (!command.equalsIgnoreCase("bye")) {
             try {
@@ -40,7 +43,7 @@ public class Botavius {
             } catch (BotaviusException e) {
                 System.out.println(e.getMessage());
             } finally {
-                ;
+                save();
             }
 
         }
@@ -224,6 +227,7 @@ public class Botavius {
         //parametersByName.forEach((key, value) -> System.out.println(key + " => " + value));
         return parametersByName;
     }
+
     /**
      * Deletes the task identified by the command parameters.
      *
@@ -245,6 +249,61 @@ public class Botavius {
                         + " tasks in the list.";
         storedTasks.remove(taskIndex);
         return returnstring;
+    }
+
+    public static void save() {
+        StringBuilder return_string = new StringBuilder();
+        for (int i = 0; i < index; ++i) {
+            return_string
+                    .append(storedTasks.get(i).toString())
+                    .append("\n");
+        }
+        //i didnt want to do an exception check but i am forced to.
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("save.txt"))) {
+            writer.write(return_string.toString());
+            //System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            //System.err.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        } finally {
+            ;
+        }
+    }
+
+    public static void load() {
+        try (BufferedReader br = new BufferedReader(new FileReader("save.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String [] data;
+                boolean done = line.charAt(4) == 'X';
+                Task loadedTask = null;
+                switch (line.charAt(1)) {
+                    case 'T':
+                        loadedTask = new ToDo(line.substring(7));
+                        break;
+                    case 'E':
+                        data = line.split("from:");
+                        data = data[2].split("to:");
+                        loadedTask = new Event(line.substring(7), data[0].strip(), data[1].strip());
+                        break;
+                    case 'D':
+                        data = line.split("by:");
+                        loadedTask = new Deadline(line.substring(7), data[1].strip());
+                        break;
+                }
+                storedTasks.add(loadedTask);
+                index += 1;
+                if (done) {
+                    markTask(new String[]{"",Integer.toString(index)});
+                }
+            }
+        } catch (IOException e) {
+            ;
+        } catch (BotaviusException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            ;
+        }
     }
     /**
      * Processes a command entered by the user.
@@ -271,6 +330,8 @@ public class Botavius {
                 return todo(namedParameters);
             case "delete":
                 return delete(parameters);
+            case "bye":
+                return "bye";
             default:
                 throw new BotaviusException("bad command issued.");
         }
