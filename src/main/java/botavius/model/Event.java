@@ -47,7 +47,6 @@ public class Event extends Task {
      */
     public String toStorageString() {
         return "[E]" + super.toStorageString() + " from: "
-                + from.format(DATE_TIME_FORMAT) + " to: "
-                + to.format(DATE_TIME_FORMAT);
+                + from + " to: " + to;
     }
 }

@@ -39,7 +39,6 @@ public class Deadline extends Task {
      * @return the deadline task's storage representation
      */
     public String toStorageString() {
-        return "[E]" + super.toStorageString() + " by: "
-                + by.format(DATE_FORMAT);
+        return "[D]" + super.toStorageString() + " by: " + by;
     }
 }
