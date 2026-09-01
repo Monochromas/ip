@@ -1,14 +1,14 @@
-/** Represents a task with a due date or other deadline description. */
+/** A task that includes a textual deadline. */
 public class Deadline extends Task {
 
-    /** The deadline description. */
+    /** Text describing when the task is due. */
     private String by;
 
     /**
      * Creates an incomplete deadline task.
      *
      * @param description task description
-     * @param by deadline text
+     * @param by deadline text, such as {@code Sunday}
      * @throws BotaviusException if the deadline is missing
      */
     public Deadline(String description, String by) {
@@ -29,6 +29,11 @@ public class Deadline extends Task {
         return "[D]" + super.toString() + " (by: " + by + ")";
     }
 
+    /**
+     * Returns the task in the format used when persisting it.
+     *
+     * @return the deadline task's storage representation
+     */
     public String toStorageString() {
         return "[E]" + super.toStorageString() + " by: "
                 + by.format(DATE_FORMAT);

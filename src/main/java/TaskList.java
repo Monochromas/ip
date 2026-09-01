@@ -1,17 +1,12 @@
 import java.util.ArrayList;
 import java.util.Map;
 
+/** Stores, displays, and updates the tasks in a Botavius session. */
 public class TaskList {
     /** Stores tasks entered during the current session, in insertion order. */
     private static ArrayList<Task> storedTasks = new ArrayList<Task>();
 
-    /**
-     * Builds a numbered list of all tasks stored during the session.
-     *
-     * @return the stored tasks as a numbered string, or an empty string
-     *         when no tasks have been stored
-     */
-
+    /** Creates a task list and reconstructs tasks from serialized data. */
     public TaskList(String taskData) {
         storedTasks = new ArrayList<Task>();
         System.out.println("tasks: "+taskData); //debug
@@ -43,6 +38,7 @@ public class TaskList {
         }
     }
 
+    /** @return all tasks serialized for saving, one task per line */
     public static String getTaskStrings() {
         StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < storedTasks.size(); ++i) {
@@ -52,6 +48,7 @@ public class TaskList {
         }
         return returnString.toString();
     }
+    /** @return a numbered display of the tasks currently stored */
     public static String listTasks() {
         StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < storedTasks.size(); ++i) {

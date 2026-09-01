@@ -1,4 +1,4 @@
-/** Represents a standard to-do task without a date or time. */
+/** A task with a description and no deadline or event times. */
 public class ToDo extends Task {
 
     /**
@@ -19,6 +19,7 @@ public class ToDo extends Task {
     public String toString() {
         return "[T]" + super.toString();
     }
+    /** @return the to-do task in the format used when persisting it */
     public String toStorageString() {
         return "[T]" + super.toStorageString();
     }

@@ -1,18 +1,19 @@
 import java.io.*;
 
+/** Reads and writes the task data file used by Botavius. */
 public class Storage {
-    /**
-     * Saves all currently stored tasks to {@code save.txt}.
-     *
-     * <p>Each task is written on its own line using the task's string
-     * representation. If the file cannot be written, the exception is
-     * printed and the application continues running.</p>
-     */
+    /** Path of the file used for persistence. */
     private String filePath;
-
+    /** Creates storage backed by the specified file. */
     public Storage(String filePath) {
             this.filePath = filePath;
     }
+    /**
+     * Writes task data to the configured file.
+     *
+     * @param saveData serialized task data to write
+     * @return {@code saved!} after the write attempt
+     */
     public String save(String saveData) {
         //i didnt want to do an exception check but i am forced to.
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.filePath))) {
@@ -28,11 +29,9 @@ public class Storage {
     }
 
     /**
-     * Loads previously saved tasks from {@code save.txt} into the task list.
+     * Reads all text from the configured file.
      *
-     * <p>The task type and completion status are reconstructed from each
-     * saved line. If the file does not exist or cannot be read, loading is
-     * skipped and the application continues with an empty task list.</p>
+     * @return file contents, or an empty string when reading fails
      */
     public String load() {
         System.out.println("fn: "+this.filePath); //debug

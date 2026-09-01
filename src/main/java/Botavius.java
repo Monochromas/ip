@@ -4,19 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-/**
- * Runs the Botavius command-line application.
- */
+/** Entry point and coordinator for the Botavius command-line application. */
 public class Botavius {
+    /** Provides file-based persistence for the current task list. */
     private static Storage storage;
+    /** Holds the tasks loaded for the current session. */
     private static TaskList tasks;
+    /** Reads input and prints user-facing messages. */
     private static Ui ui;
+    /** Converts user commands into task-list operations. */
     private static Parser parser;
 
     /**
-     * Starts the application and reads commands until the user enters {@code bye}.
+     * Creates an application using the specified save-file path.
      *
-     * @param args command-line arguments, which are not used
+     * @param filePath path of the file used to load and save tasks
      */
     public Botavius(String filePath) {
         ui = new Ui();
@@ -27,6 +29,7 @@ public class Botavius {
         parser = new Parser();
     }
 
+    /** Runs the interactive session until the user enters {@code bye}. */
     public static void run() {
         String command = "";
         ui.printBanner();
@@ -46,6 +49,7 @@ public class Botavius {
         ui.goodbye();
     }
 
+    /** Starts Botavius using {@code save.txt} as its save file. */
     public static void main() {
         new Botavius("save.txt").run();
     }

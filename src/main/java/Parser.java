@@ -3,8 +3,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** Parses user input into command names and command parameters. */
 public class Parser {
 
+    /** Creates a parser. */
     public Parser() {
         ;
     }
@@ -43,15 +45,23 @@ public class Parser {
     }
 
     /**
-     * Processes a command entered by the user.
+     * Splits a command into whitespace-separated words.
      *
-     * @param command command text to process
-     * @return the confirmation message for the user-provided command
-     * @throws BotaviusException if the command is not recognized
+     * @param command command text to split on whitespace
+     * @return the whitespace-separated command words
      */
     public static String[] getUnnamedParameters(String command) {
         return command.split("\\s+");
     }
+
+    /**
+     * Dispatches a command to the corresponding operation on a task list.
+     *
+     * @param command complete command entered by the user
+     * @param taskList task list to modify or query
+     * @return the operation's message for display
+     * @throws BotaviusException if the command name is not supported
+     */
     public static String process(String command, TaskList taskList) {
         Map<String, String> namedParameters = getNamedParameters(command);
         String[] parameters = getUnnamedParameters(command);

@@ -48,6 +48,11 @@ public class Task {
         return return_string + this.description;
     }
 
+    /**
+     * Returns the task text in the base format used for persistence.
+     *
+     * @return completion marker followed by the description
+     */
     public String toStorageString() {
         String return_string = "";
         if (isDone) {

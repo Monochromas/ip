@@ -1,9 +1,9 @@
-/** Represents a task scheduled between a start and end time. */
+/** A task scheduled between textual start and end times. */
 public class Event extends Task {
 
-    /** Event start time. */
+    /** Text describing when the event starts. */
     private String from;
-    /** Event end time. */
+    /** Text describing when the event ends. */
     private String to;
 
     /**
@@ -36,6 +36,11 @@ public class Event extends Task {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 
+    /**
+     * Returns the event in the format used when persisting it.
+     *
+     * @return the event's storage representation
+     */
     public String toStorageString() {
         return "[E]" + super.toStorageString() + " from: "
                 + from.format(DATE_TIME_FORMAT) + " to: "
