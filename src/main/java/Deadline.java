@@ -28,4 +28,9 @@ public class Deadline extends Task {
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by + ")";
     }
+
+    public String toStorageString() {
+        return "[E]" + super.toStorageString() + " by: "
+                + by.format(DATE_FORMAT);
+    }
 }

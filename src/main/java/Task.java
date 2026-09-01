@@ -47,4 +47,16 @@ public class Task {
         }
         return return_string + this.description;
     }
+
+    public String toStorageString() {
+        String return_string = "";
+        if (isDone) {
+            return_string = "[X] ";
+        } else {
+            return_string = "[ ] ";
+        }
+        return return_string + this.description;
+    }
+
+
 }

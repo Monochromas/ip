@@ -35,4 +35,10 @@ public class Event extends Task {
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
+
+    public String toStorageString() {
+        return "[E]" + super.toStorageString() + " from: "
+                + from.format(DATE_TIME_FORMAT) + " to: "
+                + to.format(DATE_TIME_FORMAT);
+    }
 }
