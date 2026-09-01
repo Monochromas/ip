@@ -1,3 +1,7 @@
+package botavius.model;
+
+import botavius.exception.BotaviusException;
+
 import java.util.ArrayList;
 import java.util.Map;
 

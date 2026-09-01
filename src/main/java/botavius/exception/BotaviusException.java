@@ -1,3 +1,5 @@
+package botavius.exception;
+
 /**
  * Reports an invalid command or task detail entered in the Botavius
  * application.

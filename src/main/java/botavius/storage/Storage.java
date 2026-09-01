@@ -1,3 +1,5 @@
+package botavius.storage;
+
 import java.io.*;
 
 /** Reads and writes the task data file used by Botavius. */

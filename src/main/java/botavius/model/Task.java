@@ -1,3 +1,7 @@
+package botavius.model;
+
+import botavius.exception.BotaviusException;
+
 /**
  * Represents a task entered by the user and its completion status.
  */

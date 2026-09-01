@@ -1,3 +1,7 @@
+package botavius.model;
+
+import botavius.exception.BotaviusException;
+
 /** A task that includes a textual deadline. */
 public class Deadline extends Task {
 

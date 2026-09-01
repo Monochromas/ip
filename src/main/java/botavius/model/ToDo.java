@@ -1,3 +1,5 @@
+package botavius.model;
+
 /** A task with a description and no deadline or event times. */
 public class ToDo extends Task {
 

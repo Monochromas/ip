@@ -1,3 +1,7 @@
+package botavius.model;
+
+import botavius.exception.BotaviusException;
+
 /** A task scheduled between textual start and end times. */
 public class Event extends Task {
 

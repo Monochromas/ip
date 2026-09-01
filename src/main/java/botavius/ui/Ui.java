@@ -1,3 +1,5 @@
+package botavius.ui;
+
 import java.util.Scanner;
 
 /** Handles console input and output for the Botavius application. */
