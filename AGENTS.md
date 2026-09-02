@@ -34,6 +34,10 @@ Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
 
+## JUnit coverage target
+
+Focus JUnit coverage on approximately the highest-value 50% of candidate methods in each changed class, prioritizing complex, core, or critical business logic. Update the relevant JUnit tests after every code change so that the tests continue to meet this 50% target.
+
 ## UI testing after code changes
 
 After every code update:
