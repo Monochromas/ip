@@ -1,7 +1,7 @@
 package botavius;
 
 import botavius.exception.BotaviusException;
-import botavius.model.TaskList;
+import botavius.tasklist.TaskList;
 import botavius.parser.Parser;
 import botavius.storage.Storage;
 import botavius.ui.Ui;
@@ -57,8 +57,11 @@ public class Botavius {
         ui.goodbye();
     }
 
-    /** Starts Botavius using {@code save.txt} as its save file. */
-    public static void main() {
+    /** Starts Botavius using {@code save.txt} as its save file.
+     *
+     * @param args command-line arguments, currently unused
+     */
+    public static void main(String[] args) {
         new Botavius("save.txt").run();
     }
 }

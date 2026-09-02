@@ -1,4 +1,4 @@
-package botavius.model;
+package botavius.tasklist;
 
 import botavius.exception.BotaviusException;
 

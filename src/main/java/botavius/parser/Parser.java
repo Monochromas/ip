@@ -1,7 +1,7 @@
 package botavius.parser;
 
 import botavius.exception.BotaviusException;
-import botavius.model.TaskList;
+import botavius.tasklist.TaskList;
 
 import java.util.HashMap;
 import java.util.Map;
