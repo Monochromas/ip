@@ -19,7 +19,10 @@ public class Ui {
         scanner = new Scanner(System.in);
     }
 
-    /** @return the next line entered on standard input */
+    /** Reads and returns the next line entered on standard input.
+     *
+     * @return the next input line
+     */
     public static String getUserInput() {
         return scanner.nextLine();
     }
@@ -50,7 +53,10 @@ public class Ui {
     public static void printBanner() {
         System.out.print(BANNER);
     }
-    /** Prints a message between the application's separator lines. */
+    /** Prints a message between the application's separator lines.
+     *
+     * @param message message to print
+     */
     public static void printFormattedMessage(String message) {
         System.out.println("____________________________________________________________");
         System.out.println(message);

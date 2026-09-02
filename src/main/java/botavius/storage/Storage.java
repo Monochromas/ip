@@ -6,7 +6,10 @@ import java.io.*;
 public class Storage {
     /** Path of the file used for persistence. */
     private String filePath;
-    /** Creates storage backed by the specified file. */
+    /** Creates storage backed by the specified file.
+     *
+     * @param filePath path of the persistence file
+     */
     public Storage(String filePath) {
             this.filePath = filePath;
     }

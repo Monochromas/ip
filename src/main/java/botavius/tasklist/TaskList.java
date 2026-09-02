@@ -10,7 +10,10 @@ public class TaskList {
     /** Stores tasks entered during the current session, in insertion order. */
     private static ArrayList<Task> storedTasks = new ArrayList<Task>();
 
-    /** Creates a task list and reconstructs tasks from serialized data. */
+    /** Creates a task list and reconstructs tasks from serialized data.
+     *
+     * @param taskData serialized task data, with one task per line
+     */
     public TaskList(String taskData) {
         storedTasks = new ArrayList<Task>();
         System.out.println("tasks: "+taskData); //debug
@@ -42,7 +45,10 @@ public class TaskList {
         }
     }
 
-    /** @return all tasks serialized for saving, one task per line */
+    /** Returns all tasks serialized for saving, one task per line.
+     *
+     * @return all serialized tasks
+     */
     public static String getTaskStrings() {
         StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < storedTasks.size(); ++i) {
@@ -52,7 +58,10 @@ public class TaskList {
         }
         return returnString.toString();
     }
-    /** @return a numbered display of the tasks currently stored */
+    /** Returns a numbered display of the tasks currently stored.
+     *
+     * @return the formatted task-list display
+     */
     public static String listTasks() {
         StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < storedTasks.size(); ++i) {
