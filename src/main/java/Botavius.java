@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Runs the Botavius command-line application.
+ * Runs the Botavius chatbot command-line application.
  */
 public class Botavius {
     /** Reads commands entered by the user. */
