@@ -78,6 +78,34 @@ public class TaskList {
     }
 
     /**
+     * Returns the numbered tasks whose descriptions contain the search text.
+     * Searching the description prevents completion and task-type markers
+     * from affecting the result.
+     *
+     * @param searchText text to look for in each task description
+     * @return a formatted list of matching tasks, or a message when none match
+     */
+    public static String find(String searchText) {
+        StringBuilder matchingTasks = new StringBuilder();
+        int index = 1;
+        for (int i = 0; i < storedTasks.size(); ++i) {
+            if (storedTasks.get(i).getDescription().contains(searchText)) {
+                matchingTasks
+                        .append(Integer.toString(index))
+                        .append(": ")
+                        .append(storedTasks.get(i).toString())
+                        .append("\n");
+                index++;
+            }
+        }
+        if (matchingTasks.length() == 0) {
+            return "There are no matching tasks.";
+        }
+        return "Here are the matching tasks in your list:\n"
+                + matchingTasks.toString().strip();
+    }
+
+    /**
      * Marks the task identified by the command parameters as completed.
      *
      * @param parameters command words, with the task number at position 1

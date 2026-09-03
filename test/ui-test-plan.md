@@ -27,6 +27,26 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ```
 
+## Test case: find a task
+
+Aim: Verify that `find` displays only tasks containing the supplied text.
+
+Input:
+
+```text
+borrow book
+buy milk
+find book
+bye
+```
+
+Expected output:
+
+```text
+Here are the matching tasks in your list:
+1: [ ] borrow book
+```
+
 ## Test case: add a deadline task
 
 Aim: Verify that a deadline command stores and displays its deadline.

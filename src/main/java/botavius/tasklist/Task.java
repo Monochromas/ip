@@ -36,11 +36,21 @@ public class Task {
     }
 
     /**
+     * Returns the task description without completion or type markers.
+     *
+     * @return the task description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Returns the task with a completion marker and its description.
      *
      * @return {@code [X]} followed by the description if complete, otherwise
      *         {@code [ ]} followed by the description
      */
+
     @Override
     public String toString() {
         String return_string = "";
