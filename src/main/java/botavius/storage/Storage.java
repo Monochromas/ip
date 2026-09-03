@@ -1,6 +1,10 @@
 package botavius.storage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /** Reads and writes the task data file used by Botavius. */
 public class Storage {
@@ -11,7 +15,7 @@ public class Storage {
      * @param filePath path of the persistence file
      */
     public Storage(String filePath) {
-            this.filePath = filePath;
+        this.filePath = filePath;
     }
     /**
      * Writes task data to the configured file.
@@ -27,8 +31,6 @@ public class Storage {
         } catch (IOException e) {
             //System.err.println("An error occurred while writing to the file.");
             e.printStackTrace();
-        } finally {
-            ;
         }
         return "saved!";
     }

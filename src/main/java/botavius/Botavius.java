@@ -1,17 +1,10 @@
 package botavius;
 
 import botavius.exception.BotaviusException;
-import botavius.tasklist.TaskList;
 import botavius.parser.Parser;
 import botavius.storage.Storage;
+import botavius.tasklist.TaskList;
 import botavius.ui.Ui;
-
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 /** Entry point and coordinator for the Botavius command-line application. */
 public class Botavius {
     /** Provides file-based persistence for the current task list. */
@@ -49,8 +42,6 @@ public class Botavius {
                 ui.printFormattedMessage(command);
             } catch (BotaviusException e) {
                 System.out.println(e.getMessage());
-            } finally {
-                ;
             }
         }
         storage.save(tasks.getTaskStrings());
