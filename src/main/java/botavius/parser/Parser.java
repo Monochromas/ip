@@ -73,6 +73,8 @@ public class Parser {
         switch (parameters[0].toLowerCase()) {
             case "list":
                 return taskList.listTasks();
+            case "find":
+                return taskList.find(command.substring(5).strip());
             case "mark":
                 return taskList.markTask(parameters);
             case "unmark":
@@ -85,6 +87,8 @@ public class Parser {
                 return taskList.todo(namedParameters);
             case "delete":
                 return taskList.delete(parameters);
+            case "bye":
+                return "bye"; //exit case
             default:
                 throw new BotaviusException("bad command issued.");
         }
