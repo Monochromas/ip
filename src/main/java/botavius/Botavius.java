@@ -35,6 +35,7 @@ public class Botavius {
         String command = "";
         ui.printBanner();
         ui.greet();
+
         while (!command.equalsIgnoreCase("bye")) {
             try {
                 command = ui.getUserInput();
@@ -44,6 +45,7 @@ public class Botavius {
                 System.out.println(e.getMessage());
             }
         }
+        
         storage.save(tasks.getTaskStrings());
         ui.goodbye();
     }
