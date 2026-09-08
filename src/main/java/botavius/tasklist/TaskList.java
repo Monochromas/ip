@@ -1,9 +1,9 @@
 package botavius.tasklist;
 
-import botavius.exception.BotaviusException;
-
 import java.util.ArrayList;
 import java.util.Map;
+
+import botavius.exception.BotaviusException;
 
 /** Stores, displays, and updates the tasks in a Botavius session. */
 public class TaskList {
@@ -16,11 +16,11 @@ public class TaskList {
      */
     public TaskList(String taskData) {
         storedTasks = new ArrayList<Task>();
-        System.out.println("tasks: "+taskData); //debug
+        System.out.println("tasks: " + taskData); //debug
         String[] taskStrings = taskData.split("\n");
         for (int i = 0; i < taskStrings.length; ++i) {
-            System.out.println("task: "+taskStrings[i]); //debug
-            String [] data;
+            System.out.println("task: " + taskStrings[i]); //debug
+            String[] data;
             boolean done = taskStrings[i].charAt(4) == 'X';
             Task loadedTask = null;
             switch (taskStrings[i].charAt(1)) {
@@ -37,10 +37,12 @@ public class TaskList {
                     data = taskStrings[i].split("by:");
                     loadedTask = new Deadline(data[0].substring(7).strip(), data[1].strip());
                     break;
+                default:
+                    throw new BotaviusException("invalid task type.");
             }
             storedTasks.add(loadedTask);
             if (done) {
-                markTask(new String[]{"",Integer.toString(storedTasks.size()-1)});
+                markTask(new String[]{"", Integer.toString(storedTasks.size() - 1)});
             }
         }
     }
