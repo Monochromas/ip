@@ -14,19 +14,24 @@ public class Event extends Task {
      * Creates an incomplete event task.
      *
      * @param description task description
-     * @param from event start time
-     * @param to event end time
-     * @throws BotaviusException if either time is missing
+     * @param from event start date and time in {@code dd-MM-yyyy HH:mm} format
+     * @param to event end date and time in {@code dd-MM-yyyy HH:mm} format
+     * @throws BotaviusException if either date-time is missing or invalid
      */
     public Event(String description, String from, String to) {
         super(description);
-        this.from = from;
-        this.to = to;
         if (from == null) {
             throw new BotaviusException("starting time not provided.");
         }
         if (to == null) {
             throw new BotaviusException("ending time not provided.");
+        }
+        try {
+            this.from = LocalDateTime.parse(from, DATE_TIME_FORMAT);
+            this.to = LocalDateTime.parse(to, DATE_TIME_FORMAT);
+        } catch (DateTimeParseException exception) {
+            throw new BotaviusException(
+                    "event times must be in dd-MM-yyyy HH:mm format.");
         }
     }
 
@@ -37,7 +42,9 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E]" + super.toString() + " (from: "
+                + from.format(DISPLAY_FORMAT) + " to: "
+                + to.format(DISPLAY_FORMAT) + ")";
     }
 
     /**

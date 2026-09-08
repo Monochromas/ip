@@ -54,7 +54,7 @@ Aim: Verify that a deadline command stores and displays its deadline.
 Input:
 
 ```text
-deadline return book /by Sunday
+deadline return book /by 31-12-2026 23:59
 bye
 ```
 
@@ -62,7 +62,7 @@ Expected output:
 
 ```text
 Got it. I've added this task:
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: Dec 31 2026 11:59PM)
 Now you have 1 task in the list.
 ____________________________________________________________
 Bye. Hope to see you again soon!
@@ -75,7 +75,7 @@ Aim: Verify that an event command stores and displays its start and end times.
 Input:
 
 ```text
-event project meeting /from Mon 2pm /to 4pm
+event project meeting /from 31-12-2026 14:00 /to 31-12-2026 16:00
 bye
 ```
 
@@ -83,7 +83,7 @@ Expected output:
 
 ```text
 Got it. I've added this task:
-[E][ ] project meeting (from: Mon 2pm to: 4pm)
+[E][ ] project meeting (from: Dec 31 2026 02:00PM to: Dec 31 2026 04:00PM)
 Now you have 1 task in the list.
 ____________________________________________________________
 Bye. Hope to see you again soon!

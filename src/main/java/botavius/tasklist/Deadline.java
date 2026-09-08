@@ -17,9 +17,13 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
         if (by == null) {
             throw new BotaviusException("deadline not provided.");
+        }
+        try {
+            this.by = LocalDateTime.parse(by, DATE_FORMAT);
+        } catch (DateTimeParseException exception) {
+            throw new BotaviusException("deadline must be in dd-MM-yyyy HH:mm format.");
         }
     }
 
@@ -30,7 +34,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[D]" + super.toString() + " (by: "
+                + by.format(DISPLAY_FORMAT) + ")";
     }
 
     /**
