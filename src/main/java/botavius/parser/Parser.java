@@ -1,12 +1,12 @@
 package botavius.parser;
 
-import botavius.exception.BotaviusException;
-import botavius.tasklist.TaskList;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import botavius.exception.BotaviusException;
+import botavius.tasklist.TaskList;
 
 /** Parses user input into command names and command parameters. */
 public class Parser {

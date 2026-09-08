@@ -1,9 +1,9 @@
 package botavius.tasklist;
 
-import botavius.exception.BotaviusException;
-
 import java.util.ArrayList;
 import java.util.Map;
+
+import botavius.exception.BotaviusException;
 
 /** Stores, displays, and updates the tasks in a Botavius session. */
 public class TaskList {

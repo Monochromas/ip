@@ -1,9 +1,9 @@
 package botavius;
 
 import botavius.exception.BotaviusException;
-import botavius.tasklist.TaskList;
 import botavius.parser.Parser;
 import botavius.storage.Storage;
+import botavius.tasklist.TaskList;
 import botavius.ui.Ui;
 
 /** Entry point and coordinator for the Botavius command-line application. */
@@ -46,10 +46,9 @@ public class Botavius {
                 System.out.println(ui.printFormattedMessage(command));
             } catch (BotaviusException e) {
                 System.out.println(e.getMessage());
-            } finally {
-                ;
             }
         }
+        
         storage.save(tasks.getTaskStrings());
         System.out.println(ui.goodbye());
     }

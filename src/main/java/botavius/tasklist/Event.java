@@ -14,9 +14,9 @@ public class Event extends Task {
      * Creates an incomplete event task.
      *
      * @param description task description
-     * @param from event start time
-     * @param to event end time
-     * @throws BotaviusException if either time is missing
+     * @param from event start date and time in {@code dd-MM-yyyy HH:mm} format
+     * @param to event end date and time in {@code dd-MM-yyyy HH:mm} format
+     * @throws BotaviusException if either date-time is missing or invalid
      */
     public Event(String description, String from, String to) {
         super(description);
