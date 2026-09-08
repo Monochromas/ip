@@ -1,12 +1,12 @@
 package botavius.tasklist;
 
-import botavius.exception.BotaviusException;
+import java.time.LocalDateTime;
 
 /** A task that includes a textual deadline. */
 public class Deadline extends Task {
 
     /** Text describing when the task is due. */
-    private String by;
+    private LocalDateTime by;
 
     /**
      * Creates an incomplete deadline task.
@@ -17,10 +17,7 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
-        if (by == null) {
-            throw new BotaviusException("deadline not provided.");
-        }
+        this.by = TaskDateTime.parse(by, "deadline");
     }
 
     /**
@@ -30,7 +27,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[D]" + super.toString() + " (by: "
+                + TaskDateTime.toDisplayString(by) + ")";
     }
 
     /**
@@ -39,6 +37,7 @@ public class Deadline extends Task {
      * @return the deadline task's storage representation
      */
     public String toStorageString() {
-        return "[D]" + super.toStorageString() + " by: " + by;
+        return "[D]" + super.toStorageString() + " by: "
+                + TaskDateTime.toStorageString(by);
     }
 }

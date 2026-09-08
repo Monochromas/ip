@@ -6,12 +6,6 @@ import botavius.parser.Parser;
 import botavius.storage.Storage;
 import botavius.ui.Ui;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 /** Entry point and coordinator for the Botavius command-line application. */
 public class Botavius {
     /** Provides file-based persistence for the current task list. */
@@ -32,8 +26,11 @@ public class Botavius {
         ui = new Ui();
         storage = new Storage(filePath);
         String taskData = storage.load();
-        System.out.println(taskData);
-        tasks = new TaskList(taskData);
+        try {
+            tasks = new TaskList(taskData);
+        } catch (BotaviusException exception) {
+            tasks = new TaskList("");
+        }
         parser = new Parser();
     }
 
@@ -41,12 +38,12 @@ public class Botavius {
     public static void run() {
         String command = "";
         ui.printBanner();
-        ui.greet();
+        System.out.println(ui.greet());
         while (!command.equalsIgnoreCase("bye")) {
             try {
                 command = ui.getUserInput();
                 command = parser.process(command, tasks);
-                ui.printFormattedMessage(command);
+                System.out.println(ui.printFormattedMessage(command));
             } catch (BotaviusException e) {
                 System.out.println(e.getMessage());
             } finally {
@@ -54,7 +51,7 @@ public class Botavius {
             }
         }
         storage.save(tasks.getTaskStrings());
-        ui.goodbye();
+        System.out.println(ui.goodbye());
     }
 
     /** Starts Botavius using {@code save.txt} as its save file.

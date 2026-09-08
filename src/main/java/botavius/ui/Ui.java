@@ -30,24 +30,22 @@ public class Ui {
     /**
      * Prints the application's greeting message.
      */
-    public static void greet() {
-        String greeting = """        
-        Hello! I'm Botavius: \n
-        What can I do for you?\n
+    public static String greet() {
+        return """        
+        Hello! I'm Botavius:
+        What can I do for you?
         ____________________________________________________________
         """;
-        System.out.println(greeting);
     }
 
     /**
      * Prints the application's goodbye message.
      */
-    public static void goodbye() {
-        String goodbye = """
-        Bye. Hope to see you again soon!\n
-        ____________________________________________________________
-        """;
-        System.out.println(goodbye);
+    public static String goodbye() {
+        return """
+    Bye. Hope to see you again soon!
+    _____________________________________________________________
+    """;
     }
     /** Prints the application's ASCII-art banner. */
     public static void printBanner() {
@@ -57,9 +55,9 @@ public class Ui {
      *
      * @param message message to print
      */
-    public static void printFormattedMessage(String message) {
-        System.out.println("____________________________________________________________");
-        System.out.println(message);
-        System.out.println("____________________________________________________________");
+    public static String printFormattedMessage(String message) {
+        return "____________________________________________________________\n"
+                + message
+                + "\n____________________________________________________________";
     }
 }

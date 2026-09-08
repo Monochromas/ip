@@ -1,6 +1,10 @@
 package botavius.storage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /** Reads and writes the task data file used by Botavius. */
 public class Storage {
@@ -39,7 +43,6 @@ public class Storage {
      * @return file contents, or an empty string when reading fails
      */
     public String load() {
-        System.out.println("fn: "+this.filePath); //debug
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
             return br.readAllAsString();
         } catch (IOException e) {
