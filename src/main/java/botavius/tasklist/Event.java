@@ -1,14 +1,14 @@
 package botavius.tasklist;
 
-import botavius.exception.BotaviusException;
+import java.time.LocalDateTime;
 
 /** A task scheduled between textual start and end times. */
 public class Event extends Task {
 
     /** Text describing when the event starts. */
-    private String from;
+    private LocalDateTime from;
     /** Text describing when the event ends. */
-    private String to;
+    private LocalDateTime to;
 
     /**
      * Creates an incomplete event task.
@@ -20,19 +20,8 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) {
         super(description);
-        if (from == null) {
-            throw new BotaviusException("starting time not provided.");
-        }
-        if (to == null) {
-            throw new BotaviusException("ending time not provided.");
-        }
-        try {
-            this.from = LocalDateTime.parse(from, DATE_TIME_FORMAT);
-            this.to = LocalDateTime.parse(to, DATE_TIME_FORMAT);
-        } catch (DateTimeParseException exception) {
-            throw new BotaviusException(
-                    "event times must be in dd-MM-yyyy HH:mm format.");
-        }
+        this.from = TaskDateTime.parse(from, "event start time");
+        this.to = TaskDateTime.parse(to, "event end time");
     }
 
     /**
@@ -43,8 +32,8 @@ public class Event extends Task {
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: "
-                + from.format(DISPLAY_FORMAT) + " to: "
-                + to.format(DISPLAY_FORMAT) + ")";
+                + TaskDateTime.toDisplayString(from) + " to: "
+                + TaskDateTime.toDisplayString(to) + ")";
     }
 
     /**
@@ -54,6 +43,7 @@ public class Event extends Task {
      */
     public String toStorageString() {
         return "[E]" + super.toStorageString() + " from: "
-                + from + " to: " + to;
+                + TaskDateTime.toStorageString(from) + " to: "
+                + TaskDateTime.toStorageString(to);
     }
 }

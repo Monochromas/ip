@@ -16,11 +16,15 @@ public class TaskList {
      */
     public TaskList(String taskData) {
         storedTasks = new ArrayList<Task>();
-        System.out.println("tasks: " + taskData); //debug
+        if (taskData == null || taskData.isBlank()) {
+            return;
+        }
         String[] taskStrings = taskData.split("\n");
         for (int i = 0; i < taskStrings.length; ++i) {
-            System.out.println("task: " + taskStrings[i]); //debug
             String[] data;
+            if (taskStrings[i].length() < 7) {
+                throw new BotaviusException("invalid task record.");
+            }
             boolean done = taskStrings[i].charAt(4) == 'X';
             Task loadedTask = null;
             switch (taskStrings[i].charAt(1)) {
@@ -29,12 +33,21 @@ public class TaskList {
                     break;
                 case 'E':
                     data = taskStrings[i].split("from:");
+                    if (data.length != 2) {
+                        throw new BotaviusException("event start time not provided.");
+                    }
                     String description = data[0].substring(7).strip();
                     data = data[1].split("to:");
+                    if (data.length != 2) {
+                        throw new BotaviusException("event end time not provided.");
+                    }
                     loadedTask = new Event(description, data[0].strip(), data[1].strip());
                     break;
                 case 'D':
                     data = taskStrings[i].split("by:");
+                    if (data.length != 2) {
+                        throw new BotaviusException("deadline not provided.");
+                    }
                     loadedTask = new Deadline(data[0].substring(7).strip(), data[1].strip());
                     break;
                 default:
@@ -115,7 +128,7 @@ public class TaskList {
      * @throws BotaviusException if the task number does not identify a task
      */
     public static String markTask(String[] parameters) {
-        int taskIndex = Integer.parseInt(parameters[1]);
+        int taskIndex = Integer.parseInt(parameters[1]) - 1;
         if (taskIndex >= storedTasks.size() || taskIndex < 0) {
             throw new BotaviusException("Task index doesn't exist");
         }

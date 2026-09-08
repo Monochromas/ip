@@ -1,5 +1,6 @@
 package botavius;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,18 @@ class BotaviusTest {
         new Botavius(saveFile.toString());
 
         assertTrue(TaskList.getTaskStrings().contains("buy milk"));
+    }
+
+    /** Verifies that malformed persisted data starts a clean session. */
+    @Test
+    void constructor_invalidSaveFile_startsWithEmptyTaskList(@TempDir Path temporaryDirectory)
+            throws Exception {
+        Path saveFile = temporaryDirectory.resolve("save.txt");
+        Files.writeString(saveFile, "[D][ ] submit report by:\n", StandardCharsets.UTF_8);
+
+        new Botavius(saveFile.toString());
+
+        assertEquals("", TaskList.getTaskStrings());
     }
 
     /** Verifies that a session containing only bye exits and prints a goodbye message. */

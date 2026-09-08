@@ -41,7 +41,6 @@ public class Storage {
      * @return file contents, or an empty string when reading fails
      */
     public String load() {
-        System.out.println("fn: " + this.filePath); //debug
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
             return br.readAllAsString();
         } catch (IOException e) {
