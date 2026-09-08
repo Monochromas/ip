@@ -1,8 +1,13 @@
 # Botavius
 
-Botavius is a command-line task manager written in Java. It supports to-do,
-deadline, and event tasks, and saves the task list to `save.txt` when the
-application exits.
+Botavius is a **command-line task manager** written in Java. It supports
+_to-do_, deadline, and event tasks, and saves the task list to `save.txt` when
+the application exits. ~~Paper notes are required~~ Digital task management
+is much more convenient! 🚀
+
+> Botavius helps you keep small tasks organised from the command line.
+
+Learn more about [GitHub-flavored Markdown](https://github.github.com/gfm/).
 
 ## Prerequisites
 
@@ -13,13 +18,13 @@ application exits.
 
 From the project directory, run:
 
-```text
+```bash
 ./gradlew run
 ```
 
 On Windows, use:
 
-```text
+```bash
 gradlew.bat run
 ```
 
@@ -28,7 +33,7 @@ Enter `bye` to save the current task list and exit.
 
 To create an executable JAR, run:
 
-```text
+```bash
 ./gradlew shadowJar
 ```
 
@@ -70,3 +75,15 @@ Run the automated tests with:
 
 The project expects Java source files to remain under
 `src/main/java`, which is the standard Gradle source location.
+
+## Getting started
+
+1. Install JDK 25.
+2. Clone this repository.
+3. Run the application with `./gradlew run`.
+
+## Project checklist
+
+- [x] Implement task creation
+- [x] Save tasks to `save.txt`
+- [ ] Add more task types
