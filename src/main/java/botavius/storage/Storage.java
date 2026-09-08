@@ -15,7 +15,7 @@ public class Storage {
      * @param filePath path of the persistence file
      */
     public Storage(String filePath) {
-            this.filePath = filePath;
+        this.filePath = filePath;
     }
     /**
      * Writes task data to the configured file.
@@ -31,8 +31,6 @@ public class Storage {
         } catch (IOException e) {
             //System.err.println("An error occurred while writing to the file.");
             e.printStackTrace();
-        } finally {
-            ;
         }
         return "saved!";
     }
