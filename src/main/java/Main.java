@@ -4,6 +4,7 @@ import botavius.storage.Storage;
 import botavius.tasklist.TaskList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -65,8 +68,62 @@ public class Main extends Application {
         status.setStyle("-fx-text-fill: #c7b8a8; -fx-padding: 8px;");
         refreshTasks();
         stage.setTitle("Botavius // Imperial Task Terminal");
-        stage.setScene(new Scene(root, 760, 560));
+        HBox imperialFrame = new HBox(0, createRomanColumn(), root, createRomanColumn());
+        imperialFrame.setPadding(Insets.EMPTY);
+        imperialFrame.setStyle("-fx-background-color: #0f0c12;");
+        HBox.setHgrow(root, Priority.ALWAYS);
+        stage.setScene(new Scene(imperialFrame, 860, 560));
         stage.show();
+    }
+
+    /** Creates a decorative Roman column that visually frames the dashboard. */
+    private VBox createRomanColumn() {
+        Region capitalTop = columnBlock(68, 12);
+        Region capitalMiddle = columnBlock(58, 10);
+        StackPane shaft = createFlutedShaft();
+        Region baseTop = columnBlock(34, 10);
+        Region baseBottom = columnBlock(68, 14);
+        VBox column = new VBox(4, capitalTop, capitalMiddle, shaft, baseTop, baseBottom);
+        column.setAlignment(Pos.CENTER);
+        column.setFillWidth(false);
+        VBox.setVgrow(shaft, Priority.ALWAYS);
+        column.setMinWidth(82);
+        column.setPrefWidth(82);
+        column.setMaxWidth(82);
+        return column;
+    }
+
+    /** Creates a tall shaft with raised vertical strips that suggest Roman fluting. */
+    private StackPane createFlutedShaft() {
+        Region shaftBase = columnBlock(28, 0);
+        HBox flutes = new HBox(3);
+        flutes.setAlignment(Pos.CENTER);
+        for (int index = 0; index < 5; index++) {
+            Region flute = new Region();
+            flute.setMinSize(3, 0);
+            flute.setPrefSize(3, 0);
+            flute.setMaxSize(3, Double.MAX_VALUE);
+            flute.setStyle("-fx-background-color: linear-gradient(to right, #4b3324, #dfbd82, #5d402a);"
+                    + "-fx-background-radius: 2px;");
+            flutes.getChildren().add(flute);
+        }
+        StackPane shaft = new StackPane(shaftBase, flutes);
+        shaft.setMinWidth(32);
+        shaft.setPrefWidth(32);
+        shaft.setMaxWidth(32);
+        StackPane.setAlignment(flutes, Pos.CENTER);
+        return shaft;
+    }
+
+    /** Creates one stone-colored section of a decorative column. */
+    private Region columnBlock(double width, double height) {
+        Region block = new Region();
+        block.setMinSize(width, height);
+        block.setPrefSize(width, height);
+        block.setMaxSize(width, height);
+        block.setStyle("-fx-background-color: linear-gradient(to right, #6b4a31, #c39a62 45%, #795538);"
+                + "-fx-border-color: #d7b477 #49301f #49301f #d7b477; -fx-border-width: 1px;");
+        return block;
     }
 
     /** Executes the command field and updates the task tablet. */
