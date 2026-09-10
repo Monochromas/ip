@@ -8,6 +8,8 @@ import botavius.ui.Ui;
 
 /** Entry point and coordinator for the Botavius command-line application. */
 public class Botavius {
+    /** Default file used to persist tasks when no other path is specified. */
+    private static final String DEFAULT_SAVE_FILE = "save.txt";
     /** Provides file-based persistence for the current task list. */
     private static Storage storage;
     /** Holds the tasks loaded for the current session. */
@@ -69,6 +71,6 @@ public class Botavius {
      * @param args command-line arguments, currently unused
      */
     public static void main(String[] args) {
-        new Botavius("save.txt").run();
+        new Botavius(DEFAULT_SAVE_FILE).run();
     }
 }
