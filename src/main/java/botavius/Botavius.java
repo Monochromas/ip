@@ -32,10 +32,21 @@ public class Botavius {
             tasks = new TaskList("");
         }
         parser = new Parser();
+
+        // These objects are required by run(); failure here indicates a programming error during setup.
+        assert ui != null : "UI must be created before the session starts";
+        assert storage != null : "Storage must be created before the session starts";
+        assert tasks != null : "Task list must be created before the session starts";
+        assert parser != null : "Parser must be created before the session starts";
     }
 
     /** Runs the interactive session until the user enters {@code bye}. */
     public static void run() {
+        // The constructor establishes these invariants before run() is called.
+        assert ui != null : "UI must be initialized before run()";
+        assert storage != null : "Storage must be initialized before run()";
+        assert tasks != null : "Task list must be initialized before run()";
+        assert parser != null : "Parser must be initialized before run()";
         String command = "";
         ui.printBanner();
         System.out.println(ui.greet());
