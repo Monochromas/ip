@@ -70,6 +70,8 @@ public class Parser {
     public static String process(String command, TaskList taskList) {
         Map<String, String> namedParameters = getNamedParameters(command);
         String[] parameters = getUnnamedParameters(command);
+        // A valid command always has a first word, which is the dispatch key below.
+        assert parameters.length > 0 : "Command must contain at least one word";
         switch (parameters[0].toLowerCase()) {
             case "list":
                 return taskList.listTasks();

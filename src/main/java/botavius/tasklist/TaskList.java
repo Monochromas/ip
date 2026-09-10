@@ -50,9 +50,11 @@ public class TaskList {
                     }
                     loadedTask = new Deadline(data[0].substring(7).strip(), data[1].strip());
                     break;
-                default:
+            default:
                     throw new BotaviusException("invalid task type.");
             }
+            // Every supported task type must produce an object before it is stored.
+            assert loadedTask != null : "Supported task type must create a task";
             storedTasks.add(loadedTask);
             if (done) {
                 markTask(new String[]{"", Integer.toString(storedTasks.size() - 1)});
