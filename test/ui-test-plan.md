@@ -79,6 +79,28 @@ event project meeting /from 31-12-2026 14:00 /to 31-12-2026 16:00
 bye
 ```
 
+## Test case: add a do-after task
+
+Aim: Verify that a do-after command stores and displays the earliest time at
+which the task can be done.
+
+Input:
+
+```text
+doafter call client /after 31-12-2026 14:00
+bye
+```
+
+Expected output:
+
+```text
+Got it. I've added this task:
+[A][ ] call client (after: 31-Dec-26 02:00 pm)
+Now you have 1 tasks in the list.
+____________________________________________________________
+Bye. Hope to see you again soon!
+```
+
 Expected output:
 
 ```text

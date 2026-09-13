@@ -85,6 +85,8 @@ public class Parser {
                 return taskList.deadline(namedParameters);
             case "event":
                 return taskList.event(namedParameters);
+            case "doafter":
+                return taskList.doAfter(namedParameters);
             case "todo":
                 return taskList.todo(namedParameters);
             case "delete":

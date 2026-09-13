@@ -258,7 +258,7 @@ public class Main extends Application {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("New Botavius Task");
         ComboBox<String> type = new ComboBox<>();
-        type.getItems().addAll("todo", "deadline", "event");
+        type.getItems().addAll("todo", "deadline", "event", "doafter");
         type.setValue("todo");
         TextField description = new TextField();
         description.setPromptText("Description");
@@ -271,10 +271,18 @@ public class Main extends Application {
         fromMinute.setEditable(true);
         toHour.setEditable(true);
         toMinute.setEditable(true);
+        Label firstTimeLabel = new Label("By (hour/min):");
+        Label secondTimeLabel = new Label("To (hour/min):");
         VBox fields = new VBox(8, type, description, date,
-                new HBox(6, new Label("From (hour/min):"), fromHour, fromMinute),
-                new HBox(6, new Label("To (hour/min):"), toHour, toMinute));
-        type.setOnAction(event -> fields.getChildren().get(4).setVisible("event".equals(type.getValue())));
+                new HBox(6, firstTimeLabel, fromHour, fromMinute),
+                new HBox(6, secondTimeLabel, toHour, toMinute));
+        type.setOnAction(event -> {
+            boolean isEvent = "event".equals(type.getValue());
+            firstTimeLabel.setText(isEvent ? "From (hour/min):" :
+                    ("doafter".equals(type.getValue()) ? "After (hour/min):" : "By (hour/min):"));
+            secondTimeLabel.setText("To (hour/min):");
+            fields.getChildren().get(4).setVisible(isEvent);
+        });
         fields.getChildren().get(4).setVisible(false);
         dialog.getDialogPane().setContent(fields);
         dialog.getDialogPane().getButtonTypes().addAll(new ButtonType("ADD TASK", ButtonData.OK_DONE),
@@ -298,6 +306,8 @@ public class Main extends Application {
             command += " /by " + start;
         } else if ("event".equals(type)) {
             command += " /from " + start + " /to " + end;
+        } else if ("doafter".equals(type)) {
+            command += " /after " + start;
         }
         executeParserCommand(command);
     }

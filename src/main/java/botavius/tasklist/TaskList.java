@@ -52,6 +52,13 @@ public class TaskList {
                     }
                     loadedTask = new Deadline(data[0].substring(7).strip(), data[1].strip());
                     break;
+                case 'A':
+                    data = taskStrings[i].split("after:");
+                    if (data.length != 2) {
+                        throw new BotaviusException("do-after time not provided.");
+                    }
+                    loadedTask = new DoAfter(data[0].substring(7).strip(), data[1].strip());
+                    break;
             default:
                     throw new BotaviusException("invalid task type.");
             }
@@ -201,6 +208,24 @@ public class TaskList {
                 namedParameters.get("/task").substring(5),
                 namedParameters.get("/from"),
                 namedParameters.get("/to"));
+        storedTasks.add(newTask);
+        return "Got it. I've added this task:\n"
+                + newTask.toString()
+                + "\nNow you have "
+                + storedTasks.size()
+                + " tasks in the list.";
+    }
+
+    /** Creates and stores a do-after task from parsed command parameters.
+     *
+     * @param namedParameters command parameters containing {@code /task} and
+     *                        {@code /after} values
+     * @return a confirmation message describing the new task
+     */
+    public static String doAfter(Map<String, String> namedParameters) {
+        DoAfter newTask = new DoAfter(
+                namedParameters.get("/task").substring(8),
+                namedParameters.get("/after"));
         storedTasks.add(newTask);
         return "Got it. I've added this task:\n"
                 + newTask.toString()

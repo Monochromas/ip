@@ -42,4 +42,21 @@ class DateTimeTaskTest {
         assertEquals("[E][ ] meeting from: 10-09-2026 14:30 to: 10-09-2026 00:00",
                 event.toStorageString());
     }
+
+    /** Verifies display and storage formatting for a do-after task. */
+    @Test
+    void doAfter_validDateTime_formatsForDisplayAndStorage() {
+        DoAfter doAfter = new DoAfter("call client", "10-09-2026 14:30");
+
+        assertEquals("[A][ ] call client (after: 10-Sep-26 02:30 pm)", doAfter.toString());
+        assertEquals("[A][ ] call client after: 10-09-2026 14:30",
+                doAfter.toStorageString());
+    }
+
+    /** Verifies that a missing do-after time is reported clearly. */
+    @Test
+    void doAfter_missingTime_throwsError() {
+        assertEquals("do-after time not provided.", assertThrows(BotaviusException.class,
+                () -> new DoAfter("call client", "")).getMessage());
+    }
 }
