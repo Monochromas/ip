@@ -1,6 +1,8 @@
 package botavius.tasklist;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import botavius.exception.BotaviusException;
@@ -74,6 +76,14 @@ public class TaskList {
                     .append("\n");
         }
         return returnString.toString();
+    }
+
+    /** Returns a read-only view of the tasks for presentation-layer clients.
+     *
+     * @return tasks in insertion order
+     */
+    public static List<Task> getTasks() {
+        return Collections.unmodifiableList(storedTasks);
     }
     /** Returns a numbered display of the tasks currently stored.
      *

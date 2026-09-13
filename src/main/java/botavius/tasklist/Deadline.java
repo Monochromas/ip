@@ -20,6 +20,14 @@ public class Deadline extends Task {
         this.by = TaskDateTime.parse(by, "deadline");
     }
 
+    /** Returns the deadline date and time.
+     *
+     * @return the deadline
+     */
+    public LocalDateTime getBy() {
+        return by;
+    }
+
     /**
      * Formats the deadline task for display.
      *

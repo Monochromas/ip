@@ -44,6 +44,14 @@ public class Task {
         return description;
     }
 
+    /** Returns whether this task is complete.
+     *
+     * @return {@code true} when the task is marked complete
+     */
+    public boolean isDone() {
+        return isDone;
+    }
+
     /**
      * Returns the task with a completion marker and its description.
      *

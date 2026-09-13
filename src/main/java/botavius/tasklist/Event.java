@@ -24,6 +24,22 @@ public class Event extends Task {
         this.to = TaskDateTime.parse(to, "event end time");
     }
 
+    /** Returns the event start date and time.
+     *
+     * @return the event start
+     */
+    public LocalDateTime getFrom() {
+        return from;
+    }
+
+    /** Returns the event end date and time.
+     *
+     * @return the event end
+     */
+    public LocalDateTime getTo() {
+        return to;
+    }
+
     /**
      * Formats the event task for display.
      *
