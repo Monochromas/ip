@@ -1,40 +1,89 @@
-# Duke User Guide
+# Botavius
 
-// Update the title above to match the actual product name
+Botavius is a **command-line task manager** written in Java. It supports
+_to-do_, deadline, and event tasks, and saves the task list to `save.txt` when
+the application exits. ~~Paper notes are required~~ Digital task management
+is much more convenient! 🚀
 
-// Product screenshot goes here
+> Botavius helps you keep small tasks organised from the command line.
 
-// Product intro goes here
+Learn more about [GitHub-flavored Markdown](https://github.github.com/gfm/).
 
-## Adding deadlines
+## Prerequisites
 
-// Describe the action and its outcome.
+- JDK 25
+- IntelliJ IDEA (optional)
 
-// Give examples of usage
+## Running the application
 
-Example: `keyword (optional arguments)`
+From the project directory, run:
 
-// A description of the expected outcome goes here
-
-```
-expected output
-```
-
-## Adding events
-
-Events use the format `event description /from dd-MM-yyyy HH:mm /to dd-MM-yyyy HH:mm`.
-The `/from` time must be earlier than or equal to the `/to` time. If it is later,
-Botavius reports:
-
-```
-event start time must not be after event end time.
+```bash
+./gradlew run
 ```
 
-## Feature ABC
+On Windows, use:
 
-// Feature details
+```bash
+gradlew.bat run
+```
 
+The application starts with a greeting and waits for one command per line.
+Enter `bye` to save the current task list and exit.
 
-## Feature XYZ
+To create an executable JAR, run:
 
-// Feature details
+```bash
+./gradlew shadowJar
+```
+
+The resulting file is `build/libs/botavius.jar`.
+
+## Commands
+
+| Command | Example | Purpose |
+| --- | --- | --- |
+| `todo` | `todo buy milk` | Adds a to-do task |
+| `deadline` | `deadline return book /by Sunday` | Adds a task with a deadline |
+| `event` | `event project meeting /from Mon 2pm /to 4pm` | Adds an event |
+| `list` | `list` | Displays all tasks |
+| `find` | `find book` | Displays tasks whose descriptions contain the search text |
+| `mark` | `mark 1` | Marks a task as done |
+| `unmark` | `unmark 1` | Marks a task as not done |
+| `delete` | `delete 1` | Removes a task |
+| `bye` | `bye` | Saves the task list and exits |
+
+Commands should begin with one of the command names shown above; an unsupported
+command produces an error message.
+
+## Project structure
+
+- `src/main/java/botavius/Botavius.java` — application entry point
+- `src/main/java/botavius/ui` — console input and output
+- `src/main/java/botavius/parser` — command parsing
+- `src/main/java/botavius/tasklist` — task types and task-list operations
+- `src/main/java/botavius/storage` — loading and saving tasks
+- `src/test/java` — JUnit tests
+
+## Testing
+
+Run the automated tests with:
+
+```text
+./gradlew test
+```
+
+The project expects Java source files to remain under
+`src/main/java`, which is the standard Gradle source location.
+
+## Getting started
+
+1. Install JDK 25.
+2. Clone this repository.
+3. Run the application with `./gradlew run`.
+
+## Project checklist
+
+- [x] Implement task creation
+- [x] Save tasks to `save.txt`
+- [ ] Add more task types
