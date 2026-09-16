@@ -1,89 +1,62 @@
-# Botavius
+# Botavius User Guide
 
-Botavius is a **command-line task manager** written in Java. It supports
-_to-do_, deadline, and event tasks, and saves the task list to `save.txt` when
-the application exits. ~~Paper notes are required~~ Digital task management
-is much more convenient! 🚀
+Botavius is a Java task manager with a JavaFX graphical interface. It supports
+to-do, deadline, event, and do-after tasks and saves tasks to `save.txt`.
 
-> Botavius helps you keep small tasks organised from the command line.
+## Installation
 
-Learn more about [GitHub-flavored Markdown](https://github.github.com/gfm/).
+Install JDK 25 and Git. Verify Java with `java -version`, then clone the
+repository:
 
-## Prerequisites
+```bash
+git clone <repository-url>
+cd ip
+```
 
-- JDK 25
-- IntelliJ IDEA (optional)
+The included Gradle Wrapper means that Gradle does not need to be installed
+separately.
 
 ## Running the application
 
-From the project directory, run:
+Run `./gradlew run` from the project directory. On Windows, run
+`gradlew.bat run`. The application opens a window containing the task list,
+command field, and task controls. Use `EXIT` or enter `bye` to save tasks
+and close the app.
 
-```bash
-./gradlew run
-```
-
-On Windows, use:
-
-```bash
-gradlew.bat run
-```
-
-The application starts with a greeting and waits for one command per line.
-Enter `bye` to save the current task list and exit.
-
-To create an executable JAR, run:
-
-```bash
-./gradlew shadowJar
-```
-
-The resulting file is `build/libs/botavius.jar`.
+Build a JAR with `./gradlew shadowJar` or `gradlew.bat shadowJar` on
+Windows. The output is `build/libs/botavius.jar`.
 
 ## Commands
+
+Enter commands in the command field and click `EXECUTE`. Task numbers refer
+to the numbers shown by `list`.
 
 | Command | Example | Purpose |
 | --- | --- | --- |
 | `todo` | `todo buy milk` | Adds a to-do task |
-| `deadline` | `deadline return book /by Sunday` | Adds a task with a deadline |
-| `event` | `event project meeting /from Mon 2pm /to 4pm` | Adds an event |
+| `deadline` | `deadline return book /by 31-12-2026 23:59` | Adds a deadline |
+| `event` | `event project meeting /from 31-12-2026 14:00 /to 31-12-2026 16:00` | Adds an event |
+| `doafter` | `doafter call client /after 31-12-2026 14:00` | Adds a do-after task |
 | `list` | `list` | Displays all tasks |
-| `find` | `find book` | Displays tasks whose descriptions contain the search text |
-| `mark` | `mark 1` | Marks a task as done |
-| `unmark` | `unmark 1` | Marks a task as not done |
-| `delete` | `delete 1` | Removes a task |
-| `bye` | `bye` | Saves the task list and exits |
+| `find` | `find book` | Finds matching tasks |
+| `mark` | `mark 1` | Marks task 1 as done |
+| `unmark` | `unmark 1` | Marks task 1 as not done |
+| `delete` | `delete 1` | Deletes task 1 |
+| `bye` | `bye` | Saves and exits |
 
-Commands should begin with one of the command names shown above; an unsupported
-command produces an error message.
-
-## Project structure
-
-- `src/main/java/botavius/Botavius.java` — application entry point
-- `src/main/java/botavius/ui` — console input and output
-- `src/main/java/botavius/parser` — command parsing
-- `src/main/java/botavius/tasklist` — task types and task-list operations
-- `src/main/java/botavius/storage` — loading and saving tasks
-- `src/test/java` — JUnit tests
-
-## Testing
-
-Run the automated tests with:
+Dates use `dd-MM-yyyy` with an optional 24-hour time `HH:mm`; date-only
+values default to midnight. Event `/from` must be earlier than or equal to
+`/to`. Otherwise the application reports:
 
 ```text
-./gradlew test
+event start time must not be after event end time.
 ```
 
-The project expects Java source files to remain under
-`src/main/java`, which is the standard Gradle source location.
+The `NEW TASK` dialog provides form-based creation, and the calendar view
+filters scheduled tasks by an inclusive date range.
 
-## Getting started
+## Saving and testing
 
-1. Install JDK 25.
-2. Clone this repository.
-3. Run the application with `./gradlew run`.
-
-## Project checklist
-
-- [x] Implement task creation
-- [x] Save tasks to `save.txt`
-- [ ] Add more task types
+Tasks are loaded from and saved to `save.txt` in the project directory.
+Run `./gradlew test`, or `gradlew.bat test` on Windows, to execute the
+JUnit tests.
