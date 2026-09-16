@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import botavius.exception.BotaviusException;
+
 /** Reads and writes the task data file used by Botavius. */
 public class Storage {
     /** Path of the file used for persistence. */
@@ -21,7 +23,8 @@ public class Storage {
      * Writes task data to the configured file.
      *
      * @param saveData serialized task data to write
-     * @return {@code saved!} after the write attempt
+     * @return {@code saved!} after the write succeeds
+     * @throws BotaviusException if the task data cannot be written
      */
     public String save(String saveData) {
         //i didnt want to do an exception check but i am forced to.
@@ -29,8 +32,7 @@ public class Storage {
             writer.write(saveData.toString());
             //System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
-            //System.err.println("An error occurred while writing to the file.");
-            e.printStackTrace();
+            throw new BotaviusException("could not save tasks: " + e.getMessage());
         }
         return "saved!";
     }

@@ -7,10 +7,10 @@ import botavius.tasklist.Deadline;
 import botavius.tasklist.Event;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -21,6 +21,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +36,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.util.Duration;
 
 /** A Roman-tech themed graphical interface for Botavius. */
@@ -45,11 +51,13 @@ public class Main extends Application {
     /** Displays task results. */
     private VBox taskView;
     /** Displays command feedback. */
-    private Label status;
+    private TextArea status;
     /** Start of the currently displayed task range, or {@code null} on the calendar screen. */
     private LocalDate activeFromDate;
     /** End of the currently displayed task range, or {@code null} on the calendar screen. */
     private LocalDate activeToDate;
+    /** Whether the unfiltered task table is currently displayed. */
+    private boolean showingAllTaskTable;
     /** The window used to close the application after the exit countdown. */
     private Stage primaryStage;
     /** Prevents repeated exit requests from starting multiple countdowns. */
@@ -66,7 +74,10 @@ public class Main extends Application {
             tasks = new TaskList("");
         }
         taskView = new VBox(6);
-        status = new Label("Awaiting your command, Praetor.");
+        status = new TextArea("Awaiting your command, Praetor.");
+        status.setEditable(false);
+        status.setWrapText(true);
+        status.setPrefRowCount(4);
         Label title = new Label("BOTAVIUS");
         title.setStyle("-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #e7bd63;");
         Label subtitle = new Label("IMPERIAL TASK TERMINAL  //  SPQR-25");
@@ -81,12 +92,20 @@ public class Main extends Application {
         HBox.setHgrow(command, Priority.ALWAYS);
         Button refresh = new Button("REFRESH TABLET");
         refresh.setOnAction(event -> refreshTasks());
+        Button save = new Button("SAVE");
+        save.setOnAction(event -> saveTasks());
         Button newTask = new Button("NEW TASK");
         newTask.setOnAction(event -> showNewTaskDialog());
+        Button listAllTasks = new Button("LIST ALL TASKS");
+        listAllTasks.setOnAction(event -> showAllTasks());
         Button exit = new Button("EXIT");
         exit.setOnAction(event -> requestExit());
-        HBox actions = new HBox(10, newTask, refresh, exit, status);
-        VBox header = new VBox(5, title, subtitle, commandBar, actions);
+        VBox titleBlock = new VBox(5, title, subtitle);
+        BorderPane topBar = new BorderPane();
+        topBar.setLeft(titleBlock);
+        topBar.setRight(exit);
+        HBox actions = new HBox(10, newTask, listAllTasks, refresh, save);
+        VBox header = new VBox(5, topBar, commandBar, actions, status);
         header.setPadding(new Insets(24));
         BorderPane root = new BorderPane();
         root.setTop(header);
@@ -96,9 +115,12 @@ public class Main extends Application {
         taskView.setStyle("-fx-background-color: #211b27; -fx-padding: 12px;");
         execute.setStyle(buttonStyle());
         refresh.setStyle(buttonStyle());
+        save.setStyle(buttonStyle());
         newTask.setStyle(buttonStyle());
+        listAllTasks.setStyle(buttonStyle());
         exit.setStyle(buttonStyle());
-        status.setStyle("-fx-text-fill: #c7b8a8; -fx-padding: 8px;");
+        status.setStyle("-fx-control-inner-background: #211b27; -fx-text-fill: #c7b8a8;"
+                + "-fx-highlight-fill: #9d6b35; -fx-padding: 8px;");
         refreshTasks();
         stage.setTitle("Botavius // Imperial Task Terminal");
         HBox imperialFrame = new HBox(0, createRomanColumn(), root, createRomanColumn());
@@ -163,34 +185,123 @@ public class Main extends Application {
     private void runCommand(TextField command) {
         String input = command.getText().strip();
         if (input.isEmpty()) {
-            status.setText("Enter a command before executing.");
+            appendStatus("Enter a command before executing.");
             return;
         }
         try {
             if (!input.contains(" ") && !input.contains("/")) {
-                status.setText("Use a command such as: todo buy milk");
+                appendStatus("Use a command such as: todo buy milk");
             }
             if (!input.matches("(?i)(todo|deadline|event|list|find|mark|unmark|delete|bye)(\\s|$).*")) {
                 input = "todo " + input;
             }
             String result = Parser.process(input, tasks);
-            status.setText(result.replace("\n", "  "));
+            appendStatus(result);
             if ("bye".equalsIgnoreCase(input)) {
                 startExitCountdown();
                 return;
             }
-            refreshTasks();
+            if ("list".equalsIgnoreCase(input)) {
+                showAllTasks();
+            } else {
+                refreshTasks();
+            }
             command.clear();
         } catch (BotaviusException | NumberFormatException exception) {
-            status.setText("ERROR // " + exception.getMessage());
+            appendStatus("ERROR // " + exception.getMessage());
         } catch (RuntimeException exception) {
-            status.setText("ERROR // " + exception.getMessage());
+            appendStatus("ERROR // " + exception.getMessage());
         }
     }
 
     /** Rebuilds the visible tablet from the current task list. */
     private void refreshTasks() {
+        showingAllTaskTable = false;
         taskView.getChildren().setAll(createCalendar());
+    }
+
+    /** Displays every task in a table with one task per row. */
+    private void showAllTasks() {
+        activeFromDate = null;
+        activeToDate = null;
+        showingAllTaskTable = true;
+        taskView.getChildren().setAll(createTaskTable(new ArrayList<>(TaskList.getTasks()), true));
+    }
+
+    /** Creates a table with one task per row and a completion checkbox. */
+    private BorderPane createTaskTable(List<Task> tasksToDisplay, boolean includeBackButton) {
+        TableView<Task> table = new TableView<>();
+        table.setStyle("-fx-background-color: #17131c; -fx-control-inner-background: #211b27;"
+                + "-fx-table-cell-border-color: #3b3042; -fx-text-background-color: #e8ded2;");
+        TableColumn<Task, Task> taskColumn = new TableColumn<>("TASK");
+        taskColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue()));
+        taskColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Task task, boolean empty) {
+                super.updateItem(task, empty);
+                if (empty || task == null) {
+                    setGraphic(null);
+                    return;
+                }
+                int taskNumber = TaskList.getTasks().indexOf(task) + 1;
+                CheckBox taskBox = new CheckBox();
+                taskBox.setSelected(task.isDone());
+                taskBox.setOnAction(event -> executeParserCommand((taskBox.isSelected() ? "mark " : "unmark ")
+                        + taskNumber));
+                Label taskLabel = new Label(taskNumber + ". " + task);
+                taskLabel.setStyle(textStyle());
+                setGraphic(new HBox(8, taskBox, taskLabel));
+            }
+        });
+        taskColumn.setStyle("-fx-background-color: #332b38; -fx-text-fill: #e8ded2;");
+        taskColumn.setPrefWidth(650);
+        table.getColumns().add(taskColumn);
+        table.getItems().setAll(tasksToDisplay);
+        Label emptyMessage = new Label("No tasks in your list.");
+        emptyMessage.setStyle(textStyle());
+        table.setPlaceholder(emptyMessage);
+        VBox.setVgrow(table, Priority.ALWAYS);
+
+        BorderPane tablePane = new BorderPane();
+        if (includeBackButton) {
+            Button back = createBackToDateRangeButton();
+            HBox tableActions = new HBox(back);
+            tableActions.setAlignment(Pos.CENTER_RIGHT);
+            tablePane.setTop(tableActions);
+        }
+        tablePane.setCenter(table);
+        return tablePane;
+    }
+
+    /** Creates a button that returns from a task table to the date selectors. */
+    private Button createBackToDateRangeButton() {
+        Button back = new Button("BACK TO DATE RANGE");
+        back.setStyle(buttonStyle());
+        back.setOnAction(event -> {
+            activeFromDate = null;
+            activeToDate = null;
+            refreshTasks();
+        });
+        return back;
+    }
+
+    /** Adds a message to the session output history and scrolls to the latest message. */
+    private void appendStatus(String message) {
+        if (!status.getText().isBlank()) {
+            status.appendText("\n");
+        }
+        status.appendText(message);
+        status.positionCaret(status.getLength());
+    }
+
+    /** Saves the current task list and reports success or failure to the user. */
+    private void saveTasks() {
+        try {
+            storage.save(TaskList.getTaskStrings());
+            appendStatus("Tasks saved successfully.");
+        } catch (RuntimeException exception) {
+            appendStatus("ERROR // Unable to save tasks: " + exception.getMessage());
+        }
     }
 
     /** Sends the bye command when the exit button is pressed. */
@@ -207,7 +318,7 @@ public class Main extends Application {
             return;
         }
         exitStarted = true;
-        status.setText("Closing in " + EXIT_COUNTDOWN_SECONDS + "...");
+        appendStatus("Closing in " + EXIT_COUNTDOWN_SECONDS + "...");
         Timeline countdown = new Timeline();
         for (int secondsLeft = EXIT_COUNTDOWN_SECONDS - 1; secondsLeft >= 0; secondsLeft--) {
             int displayedSeconds = secondsLeft;
@@ -216,14 +327,14 @@ public class Main extends Application {
                         if (displayedSeconds == 0) {
                             primaryStage.close();
                         } else {
-                            status.setText("Closing in " + displayedSeconds + "...");
+                            appendStatus("Closing in " + displayedSeconds + "...");
                         }
                     }));
         }
         countdown.play();
     }
 
-    /** Creates date fields and a button for filtering scheduled tasks. */
+    /** Creates date fields and a button below them for filtering scheduled tasks. */
     private VBox createCalendar() {
         DatePicker fromDate = new DatePicker(LocalDate.now());
         DatePicker toDate = new DatePicker(LocalDate.now());
@@ -238,15 +349,15 @@ public class Main extends Application {
         fromLabel.setStyle(textStyle());
         toLabel.setStyle(textStyle());
         instruction.setStyle(textStyle());
-        HBox dateFields = new HBox(8, fromLabel, fromDate, toLabel, toDate, showTasks);
-        VBox view = new VBox(8, instruction, dateFields);
+        HBox dateFields = new HBox(8, fromLabel, fromDate, toLabel, toDate);
+        VBox view = new VBox(8, instruction, dateFields, showTasks);
         return view;
     }
 
     /** Displays scheduled tasks whose dates fall within an inclusive date range. */
     private void showTasksInRange(LocalDate fromDate, LocalDate toDate) {
-        taskView.getChildren().clear();
         if (fromDate == null || toDate == null || fromDate.isAfter(toDate)) {
+            taskView.getChildren().clear();
             Label error = new Label("Choose a valid FROM and TO date.");
             error.setStyle(textStyle());
             taskView.getChildren().add(error);
@@ -254,31 +365,22 @@ public class Main extends Application {
         }
         activeFromDate = fromDate;
         activeToDate = toDate;
-        Button back = new Button("BACK TO DATE RANGE");
-        back.setStyle(buttonStyle());
-        back.setOnAction(event -> {
-            activeFromDate = null;
-            activeToDate = null;
-            refreshTasks();
-        });
-        taskView.getChildren().add(back);
+        showingAllTaskTable = false;
         Label rangeLabel = new Label("TASKS FROM " + fromDate + " TO " + toDate);
         rangeLabel.setStyle(textStyle());
-        taskView.getChildren().add(rangeLabel);
-        boolean foundTask = false;
+        List<Task> filteredTasks = new ArrayList<>();
         for (int index = 0; index < TaskList.getTasks().size(); index++) {
             Task task = TaskList.getTasks().get(index);
             LocalDate taskDate = getTaskDate(task);
             if (taskDate != null && !taskDate.isBefore(fromDate) && !taskDate.isAfter(toDate)) {
-                taskView.getChildren().add(createTaskControl(task, index + 1));
-                foundTask = true;
+                filteredTasks.add(task);
             }
         }
-        if (!foundTask) {
-            Label empty = new Label("No scheduled tasks found in this range.");
-            empty.setStyle(textStyle());
-            taskView.getChildren().add(empty);
-        }
+        BorderPane navigation = new BorderPane();
+        navigation.setLeft(rangeLabel);
+        navigation.setRight(createBackToDateRangeButton());
+        VBox result = new VBox(12, navigation, createTaskTable(filteredTasks, false));
+        taskView.getChildren().setAll(result);
     }
 
     /** Returns the date used to place a scheduled task in the range result. */
@@ -292,27 +394,19 @@ public class Main extends Application {
         return null;
     }
 
-    /** Creates a checkbox that sends the matching mark or unmark command. */
-    private Node createTaskControl(Task task, int taskNumber) {
-        CheckBox taskBox = new CheckBox(taskNumber + ". " + task.toString());
-        taskBox.setStyle(textStyle());
-        taskBox.setSelected(task.isDone());
-        taskBox.setOnAction(event -> executeParserCommand((taskBox.isSelected() ? "mark " : "unmark ")
-                + taskNumber));
-        return taskBox;
-    }
-
     /** Sends a GUI-generated command through the existing parser. */
     private void executeParserCommand(String command) {
         try {
-            status.setText(Parser.process(command, tasks).replace("\n", "  "));
+            appendStatus(Parser.process(command, tasks));
             if (activeFromDate != null && activeToDate != null) {
                 showTasksInRange(activeFromDate, activeToDate);
+            } else if (showingAllTaskTable) {
+                showAllTasks();
             } else {
                 refreshTasks();
             }
         } catch (BotaviusException | NumberFormatException exception) {
-            status.setText("ERROR // " + exception.getMessage());
+            appendStatus("ERROR // " + exception.getMessage());
         }
     }
 
