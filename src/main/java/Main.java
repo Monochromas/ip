@@ -5,6 +5,8 @@ import botavius.tasklist.TaskList;
 import botavius.tasklist.Task;
 import botavius.tasklist.Deadline;
 import botavius.tasklist.Event;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,9 +32,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.util.Duration;
 
 /** A Roman-tech themed graphical interface for Botavius. */
 public class Main extends Application {
+    /** Number of seconds shown before the application closes. */
+    private static final int EXIT_COUNTDOWN_SECONDS = 3;
     /** Persists tasks between application sessions. */
     private Storage storage;
     /** Holds the current session's tasks. */
@@ -45,10 +50,15 @@ public class Main extends Application {
     private LocalDate activeFromDate;
     /** End of the currently displayed task range, or {@code null} on the calendar screen. */
     private LocalDate activeToDate;
+    /** The window used to close the application after the exit countdown. */
+    private Stage primaryStage;
+    /** Prevents repeated exit requests from starting multiple countdowns. */
+    private boolean exitStarted;
 
     /** Builds and displays the Botavius dashboard. */
     @Override
     public void start(Stage stage) {
+        primaryStage = stage;
         storage = new Storage("save.txt");
         try {
             tasks = new TaskList(storage.load());
@@ -63,6 +73,7 @@ public class Main extends Application {
         subtitle.setStyle("-fx-text-fill: #9a8d83; -fx-font-family: monospace;");
         TextField command = new TextField();
         command.setPromptText("Enter a command: todo, deadline, event, list, find...");
+        command.setStyle(inputStyle());
         Button execute = new Button("EXECUTE");
         execute.setOnAction(event -> runCommand(command));
         command.setOnAction(event -> runCommand(command));
@@ -72,18 +83,21 @@ public class Main extends Application {
         refresh.setOnAction(event -> refreshTasks());
         Button newTask = new Button("NEW TASK");
         newTask.setOnAction(event -> showNewTaskDialog());
-        HBox actions = new HBox(10, newTask, refresh, status);
+        Button exit = new Button("EXIT");
+        exit.setOnAction(event -> requestExit());
+        HBox actions = new HBox(10, newTask, refresh, exit, status);
         VBox header = new VBox(5, title, subtitle, commandBar, actions);
         header.setPadding(new Insets(24));
         BorderPane root = new BorderPane();
         root.setTop(header);
         root.setCenter(taskView);
         root.setPadding(new Insets(10));
-        root.setStyle("-fx-background-color: #17131c;");
+        root.setStyle("-fx-background-color: #17131c; -fx-text-fill: #e8ded2;");
         taskView.setStyle("-fx-background-color: #211b27; -fx-padding: 12px;");
         execute.setStyle(buttonStyle());
         refresh.setStyle(buttonStyle());
         newTask.setStyle(buttonStyle());
+        exit.setStyle(buttonStyle());
         status.setStyle("-fx-text-fill: #c7b8a8; -fx-padding: 8px;");
         refreshTasks();
         stage.setTitle("Botavius // Imperial Task Terminal");
@@ -161,6 +175,10 @@ public class Main extends Application {
             }
             String result = Parser.process(input, tasks);
             status.setText(result.replace("\n", "  "));
+            if ("bye".equalsIgnoreCase(input)) {
+                startExitCountdown();
+                return;
+            }
             refreshTasks();
             command.clear();
         } catch (BotaviusException | NumberFormatException exception) {
@@ -175,15 +193,53 @@ public class Main extends Application {
         taskView.getChildren().setAll(createCalendar());
     }
 
+    /** Sends the bye command when the exit button is pressed. */
+    private void requestExit() {
+        if (!exitStarted) {
+            executeParserCommand("bye");
+            startExitCountdown();
+        }
+    }
+
+    /** Displays a three-second countdown before closing the primary window. */
+    private void startExitCountdown() {
+        if (exitStarted) {
+            return;
+        }
+        exitStarted = true;
+        status.setText("Closing in " + EXIT_COUNTDOWN_SECONDS + "...");
+        Timeline countdown = new Timeline();
+        for (int secondsLeft = EXIT_COUNTDOWN_SECONDS - 1; secondsLeft >= 0; secondsLeft--) {
+            int displayedSeconds = secondsLeft;
+            countdown.getKeyFrames().add(new KeyFrame(Duration.seconds(EXIT_COUNTDOWN_SECONDS - secondsLeft),
+                    event -> {
+                        if (displayedSeconds == 0) {
+                            primaryStage.close();
+                        } else {
+                            status.setText("Closing in " + displayedSeconds + "...");
+                        }
+                    }));
+        }
+        countdown.play();
+    }
+
     /** Creates date fields and a button for filtering scheduled tasks. */
     private VBox createCalendar() {
         DatePicker fromDate = new DatePicker(LocalDate.now());
         DatePicker toDate = new DatePicker(LocalDate.now());
+        fromDate.setStyle(inputStyle());
+        toDate.setStyle(inputStyle());
         Button showTasks = new Button("SHOW TASKS");
         showTasks.setStyle(buttonStyle());
         showTasks.setOnAction(event -> showTasksInRange(fromDate.getValue(), toDate.getValue()));
-        HBox dateFields = new HBox(8, new Label("FROM:"), fromDate, new Label("TO:"), toDate, showTasks);
-        VBox view = new VBox(8, new Label("Select an inclusive date range"), dateFields);
+        Label fromLabel = new Label("FROM:");
+        Label toLabel = new Label("TO:");
+        Label instruction = new Label("Select an inclusive date range");
+        fromLabel.setStyle(textStyle());
+        toLabel.setStyle(textStyle());
+        instruction.setStyle(textStyle());
+        HBox dateFields = new HBox(8, fromLabel, fromDate, toLabel, toDate, showTasks);
+        VBox view = new VBox(8, instruction, dateFields);
         return view;
     }
 
@@ -191,7 +247,9 @@ public class Main extends Application {
     private void showTasksInRange(LocalDate fromDate, LocalDate toDate) {
         taskView.getChildren().clear();
         if (fromDate == null || toDate == null || fromDate.isAfter(toDate)) {
-            taskView.getChildren().add(new Label("Choose a valid FROM and TO date."));
+            Label error = new Label("Choose a valid FROM and TO date.");
+            error.setStyle(textStyle());
+            taskView.getChildren().add(error);
             return;
         }
         activeFromDate = fromDate;
@@ -204,7 +262,9 @@ public class Main extends Application {
             refreshTasks();
         });
         taskView.getChildren().add(back);
-        taskView.getChildren().add(new Label("TASKS FROM " + fromDate + " TO " + toDate));
+        Label rangeLabel = new Label("TASKS FROM " + fromDate + " TO " + toDate);
+        rangeLabel.setStyle(textStyle());
+        taskView.getChildren().add(rangeLabel);
         boolean foundTask = false;
         for (int index = 0; index < TaskList.getTasks().size(); index++) {
             Task task = TaskList.getTasks().get(index);
@@ -215,7 +275,9 @@ public class Main extends Application {
             }
         }
         if (!foundTask) {
-            taskView.getChildren().add(new Label("No scheduled tasks found in this range."));
+            Label empty = new Label("No scheduled tasks found in this range.");
+            empty.setStyle(textStyle());
+            taskView.getChildren().add(empty);
         }
     }
 
@@ -233,6 +295,7 @@ public class Main extends Application {
     /** Creates a checkbox that sends the matching mark or unmark command. */
     private Node createTaskControl(Task task, int taskNumber) {
         CheckBox taskBox = new CheckBox(taskNumber + ". " + task.toString());
+        taskBox.setStyle(textStyle());
         taskBox.setSelected(task.isDone());
         taskBox.setOnAction(event -> executeParserCommand((taskBox.isSelected() ? "mark " : "unmark ")
                 + taskNumber));
@@ -258,33 +321,51 @@ public class Main extends Application {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("New Botavius Task");
         ComboBox<String> type = new ComboBox<>();
+        type.setStyle(inputStyle());
         type.getItems().addAll("todo", "deadline", "event", "doafter");
         type.setValue("todo");
         TextField description = new TextField();
+        description.setStyle(inputStyle());
         description.setPromptText("Description");
         DatePicker date = new DatePicker(LocalDate.now());
+        date.setStyle(inputStyle());
         Spinner<Integer> fromHour = new Spinner<>(new IntegerSpinnerValueFactory(0, 23, 9));
         Spinner<Integer> fromMinute = new Spinner<>(new IntegerSpinnerValueFactory(0, 59, 0));
         Spinner<Integer> toHour = new Spinner<>(new IntegerSpinnerValueFactory(0, 23, 10));
         Spinner<Integer> toMinute = new Spinner<>(new IntegerSpinnerValueFactory(0, 59, 0));
+        fromHour.setStyle(inputStyle());
+        fromMinute.setStyle(inputStyle());
+        toHour.setStyle(inputStyle());
+        toMinute.setStyle(inputStyle());
         fromHour.setEditable(true);
         fromMinute.setEditable(true);
         toHour.setEditable(true);
         toMinute.setEditable(true);
         Label firstTimeLabel = new Label("By (hour/min):");
         Label secondTimeLabel = new Label("To (hour/min):");
+        firstTimeLabel.setStyle(textStyle());
+        secondTimeLabel.setStyle(textStyle());
+        HBox firstTimeFields = new HBox(6, firstTimeLabel, fromHour, fromMinute);
+        HBox secondTimeFields = new HBox(6, secondTimeLabel, toHour, toMinute);
         VBox fields = new VBox(8, type, description, date,
-                new HBox(6, firstTimeLabel, fromHour, fromMinute),
-                new HBox(6, secondTimeLabel, toHour, toMinute));
+                firstTimeFields, secondTimeFields);
         type.setOnAction(event -> {
+            boolean isDeadline = "deadline".equals(type.getValue());
             boolean isEvent = "event".equals(type.getValue());
+            boolean isDoAfter = "doafter".equals(type.getValue());
+            date.setVisible(isDeadline || isEvent || isDoAfter);
+            date.setManaged(date.isVisible());
             firstTimeLabel.setText(isEvent ? "From (hour/min):" :
-                    ("doafter".equals(type.getValue()) ? "After (hour/min):" : "By (hour/min):"));
-            secondTimeLabel.setText("To (hour/min):");
-            fields.getChildren().get(4).setVisible(isEvent);
+                    (isDoAfter ? "After (hour/min):" : "By (hour/min):"));
+            firstTimeFields.setVisible(isDeadline || isEvent || isDoAfter);
+            firstTimeFields.setManaged(firstTimeFields.isVisible());
+            secondTimeFields.setVisible(isEvent);
+            secondTimeFields.setManaged(secondTimeFields.isVisible());
         });
-        fields.getChildren().get(4).setVisible(false);
+        type.getOnAction().handle(null);
         dialog.getDialogPane().setContent(fields);
+        dialog.getDialogPane().setPrefSize(520, 260);
+        dialog.setResizable(true);
         dialog.getDialogPane().getButtonTypes().addAll(new ButtonType("ADD TASK", ButtonData.OK_DONE),
                 new ButtonType("BACK", ButtonData.CANCEL_CLOSE));
         dialog.getDialogPane().setStyle("-fx-background-color: #211b27; -fx-text-fill: #e8ded2;");
@@ -324,5 +405,16 @@ public class Main extends Application {
     private String buttonStyle() {
         return "-fx-background-color: #9d6b35; -fx-text-fill: #fff3d4;"
                 + "-fx-font-weight: bold; -fx-padding: 10px 16px;";
+    }
+
+    /** @return style for text-entry controls on the dark dashboard */
+    private String inputStyle() {
+        return "-fx-background-color: #332b38; -fx-text-fill: #f4eadf;"
+                + "-fx-prompt-text-fill: #b8a99c; -fx-highlight-fill: #9d6b35;";
+    }
+
+    /** @return style for light text on dark dashboard surfaces */
+    private String textStyle() {
+        return "-fx-text-fill: #e8ded2;";
     }
 }

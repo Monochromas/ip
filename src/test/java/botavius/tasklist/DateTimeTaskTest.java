@@ -35,12 +35,29 @@ class DateTimeTaskTest {
     /** Verifies display and storage formatting for an event. */
     @Test
     void event_validDateTime_formatsForDisplayAndStorage() {
-        Event event = new Event("meeting", "10-09-2026 14:30", "10-09-2026");
+        Event event = new Event("meeting", "10-09-2026 14:30", "10-09-2026 16:00");
 
-        assertEquals("[E][ ] meeting (from: 10-Sep-26 02:30 pm to: 10-Sep-26 12:00 am)",
+        assertEquals("[E][ ] meeting (from: 10-Sep-26 02:30 pm to: 10-Sep-26 04:00 pm)",
                 event.toString());
-        assertEquals("[E][ ] meeting from: 10-09-2026 14:30 to: 10-09-2026 00:00",
+        assertEquals("[E][ ] meeting from: 10-09-2026 14:30 to: 10-09-2026 16:00",
                 event.toStorageString());
+    }
+
+    /** Verifies that an event cannot end before it starts. */
+    @Test
+    void event_startAfterEnd_throwsError() {
+        assertEquals("event start time must not be after event end time.",
+                assertThrows(BotaviusException.class,
+                        () -> new Event("meeting", "11-09-2026", "10-09-2026")).getMessage());
+    }
+
+    /** Verifies that an event may start and end at the same time. */
+    @Test
+    void event_startEqualsEnd_isAccepted() {
+        Event event = new Event("meeting", "10-09-2026 14:30", "10-09-2026 14:30");
+
+        assertEquals("[E][ ] meeting (from: 10-Sep-26 02:30 pm to: 10-Sep-26 02:30 pm)",
+                event.toString());
     }
 
     /** Verifies display and storage formatting for a do-after task. */

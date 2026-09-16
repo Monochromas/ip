@@ -2,6 +2,8 @@ package botavius.tasklist;
 
 import java.time.LocalDateTime;
 
+import botavius.exception.BotaviusException;
+
 /** A task scheduled between textual start and end times. */
 public class Event extends Task {
 
@@ -22,6 +24,9 @@ public class Event extends Task {
         super(description);
         this.from = TaskDateTime.parse(from, "event start time");
         this.to = TaskDateTime.parse(to, "event end time");
+        if (this.from.isAfter(this.to)) {
+            throw new BotaviusException("event start time must not be after event end time.");
+        }
     }
 
     /** Returns the event start date and time.
