@@ -1,14 +1,27 @@
 package botavius.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import botavius.exception.BotaviusException;
+import botavius.tasklist.TaskList;
+
 /** Tests extraction of named parameters from Botavius commands. */
 class ParserTest {
+
+    /** Verifies that an unsupported command is rejected instead of creating a task. */
+    @Test
+    void process_unknownCommand_doesNotCreateTask() {
+        TaskList taskList = new TaskList("");
+
+        assertThrows(BotaviusException.class, () -> Parser.process("buy milk", taskList));
+        assertEquals("Here are the tasks in your list:\n", taskList.listTasks());
+    }
 
     /** Verifies that the implicit task value and one named value are extracted. */
     @Test

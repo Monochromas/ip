@@ -101,6 +101,25 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ```
 
+## Test case: reject an unknown GUI command
+
+Aim: Verify that an unrecognized command entered in the GUI command bar is
+reported as an error and is not added as a to-do task.
+
+Input in the GUI command bar:
+
+```text
+buy milk
+```
+
+Expected status:
+
+```text
+ERROR // bad command issued.
+```
+
+The task list remains unchanged.
+
 Expected output:
 
 ```text

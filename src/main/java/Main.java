@@ -189,12 +189,6 @@ public class Main extends Application {
             return;
         }
         try {
-            if (!input.contains(" ") && !input.contains("/")) {
-                appendStatus("Use a command such as: todo buy milk");
-            }
-            if (!input.matches("(?i)(todo|deadline|event|list|find|mark|unmark|delete|bye)(\\s|$).*")) {
-                input = "todo " + input;
-            }
             String result = Parser.process(input, tasks);
             appendStatus(result);
             if ("bye".equalsIgnoreCase(input)) {
